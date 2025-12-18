@@ -5,6 +5,7 @@ import userRouter from "./controllers/UserController";
 import placeRouter from "./controllers/PlaceController";
 import amenityRouter from "./controllers/AmenityController";
 import reviewRouter from "./controllers/ReviewController";
+import authRouter from "./controllers/AuthController";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 app.get("/", (_req, res) => res.send("HBnB API is running."));
 
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/places", placeRouter);
 app.use("/api/v1/amenities", amenityRouter);
