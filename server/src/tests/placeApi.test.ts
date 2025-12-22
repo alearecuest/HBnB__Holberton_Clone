@@ -54,4 +54,15 @@ describe("Place API", () => {
     expect(res.statusCode).toBe(401);
     expect(res.body).toHaveProperty("error");
   });
+
+  it("should return a list of places publicly", async () => {
+    const res = await request(app)
+      .get("/api/v1/places");
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBeGreaterThan(0);
+    expect(res.body[0]).toHaveProperty("id");
+    expect(res.body[0]).toHaveProperty("title");
+  });
 });

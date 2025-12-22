@@ -6,6 +6,15 @@ import { authenticateJWT, AuthenticatedRequest } from "../middlewares/auth";
 
 const router = Router();
 
+router.get("/", async (req: Request, res: Response) => {
+    try {
+        const places = await PlaceService.getAll();
+        res.status(200).json(places);
+    } catch (err) {
+        res.status(500).json({ error: "Could not fetch places" });
+    }
+});
+
 router.post(
     "/",
     authenticateJWT,
@@ -21,6 +30,5 @@ router.post(
         }
     }
 );
-
 
 export default router;

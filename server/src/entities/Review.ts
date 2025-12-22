@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
 import { Place } from "./Place";
@@ -14,6 +14,10 @@ export class Review extends BaseEntity {
     @ManyToOne(() => User, (user) => user.reviews, { onDelete: "CASCADE" })
     user!: User;
 
+    @Column()
+    placeId!: string;
+
     @ManyToOne(() => Place, (place) => place.reviews, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "placeId" }) 
     place!: Place;
 }

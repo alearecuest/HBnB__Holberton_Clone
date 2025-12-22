@@ -6,4 +6,8 @@ export class PlaceService {
         const place = placeRepository.create(placeData);
         return placeRepository.save(place);
     }
+
+    static async getAll(): Promise<Place[]> {
+        return placeRepository.find();
+    }
 }

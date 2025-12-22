@@ -28,7 +28,7 @@ export class ReviewService {
     static async findByPlace(placeId: string): Promise<Review[]> {
         return reviewRepository.find({
             where: { place: { id: placeId } },
-            relations: ["user"],
+            relations: ["user", "place"],
         });
     }
 }

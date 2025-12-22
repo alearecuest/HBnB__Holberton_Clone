@@ -48,10 +48,11 @@ describe("Review API", () => {
         comment: "¡Excelente!",
         placeId
       });
-    expect(res.statusCode).toBe(201);
-    expect(res.body).toHaveProperty("id");
-    expect(res.body).toHaveProperty("rating", 5);
-  });
+      console.log(res.body);
+      expect(res.statusCode).toBe(201);
+      expect(res.body).toHaveProperty("id");
+      expect(res.body).toHaveProperty("rating", 5);
+    });
 
   it("should reject review creation when not authenticated", async () => {
     const res = await request(app)
@@ -61,7 +62,27 @@ describe("Review API", () => {
         comment: "Sin login",
         placeId
       });
-    expect(res.statusCode).toBe(401);
-    expect(res.body).toHaveProperty("error");
+      expect(res.statusCode).toBe(401);
+      expect(res.body).toHaveProperty("error");
+    });
+
+  it("should list all reviews for a place", async () => {
+    await request(app)
+      .post("/api/v1/reviews")
+      .set("Authorization", `Bearer ${jwt}`)
+      .send({
+        rating: 4, 
+        comment: "Otra review para verificar",
+        placeId
+      });
+    const res = await request(app)
+      .get(`/api/v1/reviews/place/${placeId}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBeGreaterThan(0);
+    expect(res.body[0]).toHaveProperty("id");
+    expect(res.body[0]).toHaveProperty("place");
+    expect(res.body[0].place.id).toBe(placeId);
   });
 });

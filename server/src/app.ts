@@ -19,6 +19,7 @@ app.use(express.json());
 
 app.get("/", (_req, res) => res.send("HBnB API is running."));
 
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/places", placeRouter);
