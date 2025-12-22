@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-import { login } from "../api/auth";
+import { login as apiLogin } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
+	async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const data = await login(email, password);
-      localStorage.setItem("token", data.token);
+      const data = await apiLogin(email, password);
+      login(data.token);
       setError(null);
       alert("Login exitoso");
     } catch (err: any) {
