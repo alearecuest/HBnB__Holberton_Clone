@@ -10,11 +10,11 @@ export default function Login() {
 
 	async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    try {
+    try { 
       const data = await apiLogin(email, password);
-      login(data.token);
+      login(data.token, data.user);
       setError(null);
-      alert("Login exitoso");
+      alert("Login successfull");
     } catch (err: any) {
       setError(err.message || "Login failed");
     }

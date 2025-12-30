@@ -1,13 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Places from "./pages/Places";
+import CreatePlace from "./pages/CreatePlace";
+import { fetchPlaces } from "./api/places";
 
-type Page = "login" | "register" | "places";
+type Page = "login" | "register" | "places" | "create";
 
-function App() {
+export default function App() {
   const [page, setPage] = useState<Page>("login");
+  const [places, setPlaces] = useState<any[]>([]);
+  const [loadingPlaces, setLoadingPlaces] = useState<boolean>(false);
+
+  async function loadPlaces() {
+    setLoadingPlaces(true);
+    try {
+      const data = await fetchPlaces();
+      setPlaces(data);
+    } catch (e) {
+      setPlaces([]);
+    }
+    setLoadingPlaces(false);
+  }
+
+  useEffect(() => {
+    if (page === "places") loadPlaces();
+  }, [page]);
+
+  function handleCreatedPlace() {
+    setPage("places");
+    loadPlaces();
+  }
 
   return (
     <>
@@ -16,12 +40,12 @@ function App() {
         <button onClick={() => setPage("login")}>Login</button>
         <button onClick={() => setPage("register")}>Registrarse</button>
         <button onClick={() => setPage("places")}>Lugares</button>
+        <button onClick={() => setPage("create")}>Crear lugar</button>
       </nav>
       {page === "login" && <Login />}
       {page === "register" && <Register />}
-      {page === "places" && <Places />}
+      {page === "places" && <Places places={places} loading={loadingPlaces} />}
+      {page === "create" && <CreatePlace onCreated={handleCreatedPlace} />}
     </>
   );
 }
-
-export default App;

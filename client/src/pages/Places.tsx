@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { fetchPlaces } from "../api/places";
+import React from "react";
+import Reviews from "../components/Reviews";
 
 interface Place {
   id: string;
@@ -8,30 +8,17 @@ interface Place {
   price: number;
 }
 
-export default function Places() {
-  const [places, setPlaces] = useState<Place[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setLoading(true);
-    fetchPlaces()
-      .then(data => setPlaces(data))
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div style={{color:"red"}}>{error}</div>;
-
+export default function Places({ places, loading }: { places: Place[]; loading: boolean }) {
+  if (loading) return <div>Loading...</div>;
+  if (!places || places.length === 0) return <div>No places available yet.</div>;
   return (
     <div>
-      <h2>Lugares</h2>
-      {places.length === 0 && <p>No hay lugares aún.</p>}
+      <h2>Places</h2>
       <ul>
         {places.map(place => (
-          <li key={place.id}>
-            <b>{place.title}</b> — {place.description} ($ {place.price})
+          <li key={place.id} style={{ marginBottom: 32 }}>
+            <strong>{place.title}</strong> — {place.description} (${place.price})
+            <Reviews placeId={place.id} />
           </li>
         ))}
       </ul>
