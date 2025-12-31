@@ -8,13 +8,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-	async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try { 
       const data = await apiLogin(email, password);
       login(data.token, data.user);
       setError(null);
-      alert("Login successfull");
+      alert("Login successful");
     } catch (err: any) {
       setError(err.message || "Login failed");
     }
@@ -43,7 +43,7 @@ export default function Login() {
           required
         />
       </div>
-      <button type="submit">Entrar</button>
+      <button type="submit">Sign in</button>
       {error && <div style={{ color: "red", marginTop: 12 }}>{error}</div>}
     </form>
   );

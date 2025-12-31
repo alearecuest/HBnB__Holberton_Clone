@@ -4,7 +4,17 @@ import { validateBody } from "../middlewares/validateBody";
 import { reviewCreateSchema, reviewUpdateSchema } from "../schemas/reviewSchema";
 import { authenticateJWT, AuthenticatedRequest } from "../middlewares/auth";
 
-const router = Router();
+const router = Router({ mergeParams: true });
+
+router.get("/", async (req, res) => {
+    const { placeId } = req.params;
+    try {
+        const reviews = await ReviewService.findByPlace(placeId);
+        res.json(reviews);
+    } catch (err) {
+        res.status(500).json({ error: "Could not fetch reviews" });
+    }
+});
 
 router.post(
     "/",
@@ -12,9 +22,14 @@ router.post(
     validateBody(reviewCreateSchema),
     async (req: AuthenticatedRequest, res: Response) => {
         try {
+            const { placeId } = req.params;
             const userId = req.user!.userId;
-            req.body.userId = userId;
-            const review = await ReviewService.create(req.body);
+            const reviewData = {
+                ...req.body,
+                userId,
+                placeId,
+            };
+            const review = await ReviewService.create(reviewData);
             res.status(201).json(review);
         } catch (err) {
             res.status(400).json({ error: "Could not create review" });

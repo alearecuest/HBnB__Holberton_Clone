@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Places from "./pages/Places";
 import CreatePlace from "./pages/CreatePlace";
 import { fetchPlaces } from "./api/places";
+import "./App.css";
 
 type Page = "login" | "register" | "places" | "create";
 
@@ -38,9 +39,9 @@ export default function App() {
       <Navbar />
       <nav style={{ textAlign: 'center', margin: 12 }}>
         <button onClick={() => setPage("login")}>Login</button>
-        <button onClick={() => setPage("register")}>Registrarse</button>
-        <button onClick={() => setPage("places")}>Lugares</button>
-        <button onClick={() => setPage("create")}>Crear lugar</button>
+        <button onClick={() => setPage("register")}>Register</button>
+        <button onClick={() => setPage("places")}>Places</button>
+        <button onClick={() => setPage("create")}>Create place</button>
       </nav>
       {page === "login" && <Login />}
       {page === "register" && <Register />}

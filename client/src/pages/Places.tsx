@@ -17,7 +17,7 @@ export default function Places({ places, loading }: { places: Place[]; loading: 
       <ul>
         {places.map(place => (
           <li key={place.id} style={{ marginBottom: 32 }}>
-            <strong>{place.title}</strong> — {place.description} (${place.price})
+            <strong>{place.title}</strong> — {place.description} ({new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD'}).format(place.price)})
             <Reviews placeId={place.id} />
           </li>
         ))}

@@ -1,42 +1,112 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body {
+  margin: 0;
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: #f6f5f4;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 28px 36px 20px 36px;
+  padding-bottom: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+nav button {
+  background: #fff;
+  color: #222;
+  border: 1.5px solid #e0e0e0;
+  padding: 10px 26px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 4px;
+  font-size: 1rem;
+  transition: box-shadow 0.2s, border 0.2s;
+  box-shadow: 0 1px 6px #0001;
+}
+nav button:hover,
+nav button:focus {
+  background: #ecf3fe;
+  border-color: #7da5f6;
+  box-shadow: 0 2px 10px #b8c6fb45;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+h1, h2 {
+  margin-top: 0;
+  font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+  font-weight: 900;
+  letter-spacing: -1px;
 }
 
-.card {
-  padding: 2em;
+form {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 36px #8ebebc1a;
+  padding: 40px 34px;
+  margin-top: 20px;
+  width: 350px;
+}
+input, textarea, select {
+  width: 100%;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  background: #fafbfd;
+}
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid #b9d3ff;
+  border-color: #79aaff;
+  background: #f3f7ff;
 }
 
-.read-the-docs {
-  color: #888;
+ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+li {
+  padding: 14px 0;
+  border-bottom: 1.5px solid #ececec;
+  margin-bottom: 8px;
+}
+
+button[type="submit"] {
+  background: linear-gradient(90deg, #79aaff 0%, #5599dd 98%);
+  border: none;
+  color: #fff;
+  padding: 10px 28px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: 7px;
+  box-shadow: 0 1px 5px #0001;
+  transition: background 0.2s;
+}
+button[type="submit"]:hover,
+button[type="submit"]:focus {
+  background: linear-gradient(90deg, #5d97e9 0%, #417fd1 98%);
+}
+
+nav > div:last-child {
+  margin-left: auto;
+  font-weight: 500;
+  color: #444e;
+  font-size: 1rem;
+}
+
+body, #root {
+  min-height: 100vh;
+}
+#root > form, #root > div > form {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 600px) {
+  form { width: 95vw; padding: 18px 1vw; }
+  nav { margin-left: 2vw; margin-right: 2vw; }
 }
