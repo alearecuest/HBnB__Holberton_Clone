@@ -4,10 +4,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Places from "./pages/Places";
 import CreatePlace from "./pages/CreatePlace";
+import PlaceDetail from "./pages/PlaceDetail";
 import { fetchPlaces } from "./api/places";
 import "./App.css";
 
-type Page = "login" | "register" | "places" | "create";
+type Page = "login" | "register" | "places" | "create" | { detail: string };
 
 export default function App() {
   const [page, setPage] = useState<Page>("login");
@@ -34,6 +35,10 @@ export default function App() {
     loadPlaces();
   }
 
+  function goToDetail(id: string) {
+    setPage({ detail: id });
+  }
+
   return (
     <>
       <Navbar />
@@ -45,8 +50,17 @@ export default function App() {
       </nav>
       {page === "login" && <Login />}
       {page === "register" && <Register />}
-      {page === "places" && <Places places={places} loading={loadingPlaces} />}
+      {page === "places" && (
+        <Places
+          places={places}
+          loading={loadingPlaces}
+          onDetail={goToDetail}
+        />
+      )}
       {page === "create" && <CreatePlace onCreated={handleCreatedPlace} />}
+      {typeof page === "object" && "detail" in page && (
+        <PlaceDetail id={page.detail} onBack={() => setPage("places")} />
+      )}
     </>
   );
 }

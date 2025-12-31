@@ -6,10 +6,13 @@ import placeRouter from "./controllers/PlaceController";
 import amenityRouter from "./controllers/AmenityController";
 import reviewRouter from "./controllers/ReviewController";
 import authRouter from "./controllers/AuthController";
+import path from "path";
 
 dotenv.config();
 
 const app = express();
+
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use(cors({
     origin: process.env.CLIENT_URL || "http://localhost:5173",

@@ -3,6 +3,7 @@ import { User } from "./src/entities/User";
 import { Place } from "./src/entities/Place";
 import { Review } from "./src/entities/Review";
 import { Amenity } from "./src/entities/Amenity";
+import { PlacePhoto } from "./src/entities/PlacePhoto";
 
 const database =
   process.env.NODE_ENV === "test" ? ":memory:" : "hbnb.sqlite";
@@ -12,5 +13,5 @@ export const AppDataSource = new DataSource({
   database,
   synchronize: true,
   logging: false,
-  entities: [User, Place, Review, Amenity],
+  entities: [PlacePhoto, User, Place, Review, Amenity],
 });

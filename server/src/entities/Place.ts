@@ -10,6 +10,7 @@ import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
 import { Amenity } from "./Amenity";
 import { Review } from "./Review";
+import { PlacePhoto } from "./PlacePhoto";
 
 @Entity("places")
 export class Place extends BaseEntity {
@@ -41,4 +42,7 @@ export class Place extends BaseEntity {
 
 	@OneToMany(() => Review, (review) => review.place)
 	reviews!: Review[];
+
+	@OneToMany(() => PlacePhoto, (photo) => photo.place, { cascade: true })
+	photos!: PlacePhoto[];
 }
