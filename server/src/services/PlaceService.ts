@@ -25,4 +25,11 @@ export class PlaceService {
     await placePhotoRepository.save(photos);
     return photos;
   }
+
+	static async getById(id: string): Promise<Place | null> {
+    return placeRepository.findOne({
+        where: { id },
+        relations: ["photos"],
+    });
+	}
 }

@@ -42,6 +42,14 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
+    if (!form.title.trim())
+      return setError("Title is required.");
+    if (!form.description.trim())
+      return setError("Description is required.");
+    if (!form.price)
+      return setError("Price is required.");
+    if (photos.length < 1)
+      return setError("At least one photo is required.");
     try {
       const place = await createPlace({
         ...form,

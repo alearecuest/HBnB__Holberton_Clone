@@ -30,6 +30,17 @@ router.get("/", async (req: Request, res: Response) => {
     }
 });
 
+router.get("/:id", async (req: Request, res: Response) => {
+	try {
+			const { id } = req.params;
+			const place = await PlaceService.getById(id);
+			if (!place) return res.status(404).json({ error: "Place not found" });
+			res.json(place);
+	} catch (err) {
+			res.status(500).json({ error: "Error fetching place detail" });
+	}
+});
+
 router.post(
     "/",
     authenticateJWT,
