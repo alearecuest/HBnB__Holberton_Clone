@@ -12,12 +12,14 @@ dotenv.config();
 
 const app = express();
 
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
-
 app.use(cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
     credentials: true
 }));
+app.options('*', cors());
+
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
 app.use(express.json());
 
 app.get("/", (_req, res) => res.send("HBnB API is running."));

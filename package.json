@@ -10,7 +10,13 @@
     "start:server": "npm --prefix server run dev"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^5.0.0",
     "swiper": "^12.0.3",
     "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.21"
   }
 }

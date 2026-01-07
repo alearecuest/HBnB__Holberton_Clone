@@ -7,7 +7,7 @@ export default function Places({ places, loading, onDetail }: { places: any[], l
   return (
     <div style={{ maxWidth: 1060, margin: "30px auto" }}>
       <div className="hero-banner">
-        <span role="img" aria-label="home" style={{marginRight:8}}>🏠</span>
+        <span role="img" aria-label="home" style={{marginRight:8}}></span>
         Find your next destination with <b>HBnB</b>
       </div>
       <h2>Places</h2>

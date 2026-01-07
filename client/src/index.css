@@ -66,3 +66,25 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.glass {
+  background: rgba(255,255,255,0.28);
+  backdrop-filter: blur(14px) saturate(160%) contrast(110%);
+  box-shadow: 0 8px 32px #2c345563, 0 1.5px 4px #c9a2f5cc;
+  border-radius: 18px;
+  border: 1.1px solid rgba(255,255,255,0.18);
+}
+
+.vibrant-btn {
+  background: linear-gradient(89deg, #5E60F8 0%, #69EBD9 100%);
+  color: #fff;
+  box-shadow: 0 2px 12px #4e6cff66;
+  font-weight: 700;
+  transition: background .23s;
+  border: none;
+  cursor: pointer;
+}
+
+.vibrant-btn:hover {
+  background: linear-gradient(89deg, #233adf 0%, #21bcb9 100%);
+}

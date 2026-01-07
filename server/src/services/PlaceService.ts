@@ -9,14 +9,33 @@ export class PlaceService {
     return placeRepository.save(place);
   }
 
+  static async deletePhoto(placeId: string, photoIndex: number, userId: string) {
+    const place = await placeRepository.findOne({
+      where: { id: placeId },
+      relations: ["owner", "photos"]
+    });
+    if (!place || !place.owner || place.owner.id !== userId) return false;
+    if (!place.photos || photoIndex < 0 || photoIndex >= place.photos.length) return false;
+
+    const photoToDelete = place.photos[photoIndex];
+    if (photoToDelete && photoToDelete.id) {
+      await placePhotoRepository.delete(photoToDelete.id);
+    }
+    return true;
+  }
+
   static async getAll(): Promise<Place[]> {
     return placeRepository.find({
-      relations: ["photos"],
+      relations: ["photos", "owner"],
     });
   }
 
   static async addPhotos(placeId: string, photosData: Array<{ url: string }>) {
-    const place = await placeRepository.findOne({ where: { id: placeId } });
+    const place = await placeRepository.findOne({
+      where: { id: placeId },
+      relations: ["owner"]
+    });
+
     if (!place) throw new Error("Place not found");
     const photos = photosData.map(data => {
       const photo = placePhotoRepository.create({ ...data, place });
@@ -26,10 +45,14 @@ export class PlaceService {
     return photos;
   }
 
-	static async getById(id: string): Promise<Place | null> {
+  static async getById(id: string): Promise<Place | null> {
     return placeRepository.findOne({
         where: { id },
-        relations: ["photos"],
+        relations: ["photos", "owner"],
     });
-	}
+  }
+
+  static async deleteById(id: string) {
+    return placeRepository.delete(id);
+  }
 }

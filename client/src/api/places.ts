@@ -11,13 +11,13 @@ export async function createPlace(place: { title: string, description: string, p
   });
   if (!res.ok) {
     const errData = await res.json();
-    throw new Error(errData.error || "No se pudo crear el lugar");
+    throw new Error(errData.error || "The place could not be created");
   }
   return await res.json();
 }
 
 export async function fetchPlaces() {
   const res = await fetch("http://localhost:4000/api/v1/places");
-  if (!res.ok) throw new Error("Error al cargar lugares");
+  if (!res.ok) throw new Error("Error loading places");
   return await res.json();
 }

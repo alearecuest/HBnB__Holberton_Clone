@@ -111,7 +111,7 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
           margin: "16px 0",
           background: "#f9fbff",
           textAlign: "center",
-          cursor: "copy",
+          cursor: "copy"
         }}
         onClick={() => inputRef.current?.click()}
       >
@@ -126,24 +126,55 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
         {photos.length === 0
           ? <span>Drag and drop photos here, or <u>click to select</u>.</span>
           : (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}>
               {photos.map((photo, idx) => (
-                <div key={idx} style={{ position: "relative", display: "inline-block" }}>
+                <div key={idx} style={{
+                  position: "relative",
+                  width: 78,
+                  height: 78,
+                  margin: "6px 0",
+                  borderRadius: 11,
+                  overflow: "hidden",
+                  background: "#fff",
+                  border: "1.5px solid #b6cdfa",
+                  boxShadow: "0 1px 5px #cce2ff36",
+                  display: "flex", alignItems: "center", justifyContent: "center"
+                }}>
                   <img
                     src={URL.createObjectURL(photo)}
                     alt="Preview"
-                    style={{ width: 68, height: 68, objectFit: "cover", borderRadius: 6, border: "1px solid #ccd" }}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 9 }}
                   />
                   <button
                     type="button"
                     onClick={e => { e.stopPropagation(); handleRemovePhoto(idx); }}
                     style={{
-                      position: "absolute", top: -10, right: -10,
-                      border: "none", background: "#e32", color: "#fff", borderRadius: "50%",
-                      width: 20, height: 20, cursor: "pointer"
+                      all: "unset",
+                      boxSizing: "border-box",
+                      position: "absolute",
+                      top: 5,
+                      right: 5,
+                      width: 22,
+                      height: 22,
+                      background: "#e53",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      fontWeight: "900",
+                      fontSize: 15,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      zIndex: 2,
+                      margin: 0,
+                      lineHeight: "22px",
+                      border: "none",
+                      boxShadow: "0 2px 4px #0002"
                     }}
                     title="Remove photo"
-                  >&times;</button>
+                  >
+                    ×
+                  </button>
                 </div>
               ))}
             </div>

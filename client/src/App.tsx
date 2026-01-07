@@ -6,11 +6,12 @@ import Register from "./pages/Register";
 import Places from "./pages/Places";
 import CreatePlace from "./pages/CreatePlace";
 import PlaceDetail from "./pages/PlaceDetail";
+import EditPlace from "./pages/EditPlace";
 import { fetchPlaces } from "./api/places";
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
 
-type Page = "places" | "create" | { detail: string };
+type Page = "places" | "create" | { detail: string } | { edit: string };
 
 export default function App() {
   const { token, user, logout } = useAuth();
@@ -44,6 +45,10 @@ export default function App() {
 
   function goToDetail(id: string) {
     setPage({ detail: id });
+  }
+
+  function goToEdit(id: string) {
+    setPage({ edit: id });
   }
 
   function handleNav(page: string) {
@@ -93,7 +98,12 @@ export default function App() {
         </div>
       )}
       {typeof page === "object" && "detail" in page && (
-        <PlaceDetail id={page.detail} onBack={() => setPage("places")} />
+        <PlaceDetail
+          id={page.detail}
+          onBack={() => setPage("places")} onEdit={goToEdit} />
+      )}
+      {typeof page === "object" && "edit" in page && (
+        <EditPlace id={page.edit} onBack={() => setPage("places")} />
       )}
       {showLogin && (
         <Modal onClose={() => setShowLogin(false)}>
