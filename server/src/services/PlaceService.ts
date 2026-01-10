@@ -35,7 +35,6 @@ export class PlaceService {
       where: { id: placeId },
       relations: ["owner"]
     });
-
     if (!place) throw new Error("Place not found");
     const photos = photosData.map(data => {
       const photo = placePhotoRepository.create({ ...data, place });
@@ -47,12 +46,20 @@ export class PlaceService {
 
   static async getById(id: string): Promise<Place | null> {
     return placeRepository.findOne({
-        where: { id },
-        relations: ["photos", "owner"],
+      where: { id },
+      relations: ["photos", "owner"],
     });
   }
 
   static async deleteById(id: string) {
     return placeRepository.delete(id);
+  }
+
+  static async updateById(id: string, patch: Partial<Place>) {
+    await placeRepository.update(id, patch);
+    return placeRepository.findOne({
+      where: { id },
+      relations: ["photos", "owner"]
+    });
   }
 }

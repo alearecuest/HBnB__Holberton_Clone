@@ -42,6 +42,10 @@ export default function App() {
     setPage("places");
     loadPlaces();
   }
+  function handleBackFromDetailOrEdit() {
+    setPage("places");
+    loadPlaces();
+  }
 
   function goToDetail(id: string) {
     setPage({ detail: id });
@@ -100,10 +104,15 @@ export default function App() {
       {typeof page === "object" && "detail" in page && (
         <PlaceDetail
           id={page.detail}
-          onBack={() => setPage("places")} onEdit={goToEdit} />
+          onBack={handleBackFromDetailOrEdit}
+          onEdit={goToEdit}
+        />
       )}
       {typeof page === "object" && "edit" in page && (
-        <EditPlace id={page.edit} onBack={() => setPage("places")} />
+        <EditPlace
+          id={page.edit}
+          onBack={handleBackFromDetailOrEdit}
+        />
       )}
       {showLogin && (
         <Modal onClose={() => setShowLogin(false)}>

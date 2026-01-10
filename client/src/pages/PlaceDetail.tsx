@@ -20,6 +20,26 @@ function GalleryGrid({
   onDeletePhoto?: (index: number) => void;
   isOwner: boolean;
 }) {
+  const deleteBtnStyle = {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    background: "#e53",
+    color: "#fff",
+    border: "none",
+    borderRadius: "50%",
+    width: 24,
+    height: 24,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 15,
+    fontWeight: 700,
+    boxShadow: "0 2px 6px #0002",
+    cursor: "pointer",
+    padding: 0
+  };
+
   if (!photos || photos.length === 0) {
     return (
       <div style={{
@@ -55,10 +75,7 @@ function GalleryGrid({
         {isOwner && onDeletePhoto && (
           <button
             onClick={() => onDeletePhoto(0)}
-            style={{
-              position: "absolute", top: 10, right: 10, background:"#e53", color:"#fff",
-              border:"none", borderRadius:"50%", width:32, height:32, fontSize:20, fontWeight:700, cursor:"pointer"
-            }}
+            style={deleteBtnStyle}
             title="Delete photo"
           >×</button>
         )}
@@ -92,10 +109,7 @@ function GalleryGrid({
         {isOwner && onDeletePhoto && (
           <button
             onClick={() => onDeletePhoto(0)}
-            style={{
-              position: "absolute", top: 10, right: 10, background:"#e53", color:"#fff",
-              border:"none", borderRadius:"50%", width:32, height:32, fontSize:20, fontWeight:700, cursor:"pointer"
-            }}
+            style={deleteBtnStyle}
             title="Delete photo"
           >×</button>
         )}
@@ -132,10 +146,7 @@ function GalleryGrid({
             {isOwner && onDeletePhoto && (
               <button
                 onClick={() => onDeletePhoto(i+1)}
-                style={{
-                  position: "absolute", top: 10, right: 10, background:"#e53", color:"#fff",
-                  border:"none", borderRadius:"50%", width:32, height:32, fontSize:20, fontWeight:700, cursor:"pointer"
-                }}
+                style={deleteBtnStyle}
                 title="Delete photo"
               >×</button>
             )}

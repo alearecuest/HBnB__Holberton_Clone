@@ -31,42 +31,65 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 router.get("/:id", async (req: Request, res: Response) => {
-try {
+  try {
     const { id } = req.params;
     const place = await PlaceService.getById(id);
     if (!place) return res.status(404).json({ error: "Place not found" });
     res.json(place);
-} catch (err) {
+  } catch (err) {
     res.status(500).json({ error: "Error fetching place detail" });
-}
+  }
 });
 
 router.post("/", authenticateJWT, validateBody(placeCreateSchema), async (req: AuthenticatedRequest, res: Response) => {
-        try {
-            const userId = req.user!.userId;
-            req.body.ownerId = userId;
-            const place = await PlaceService.create(req.body);
-            res.status(201).json(place);
-        } catch (err) {
-            res.status(400).json({ error: "Could not create place" });
-        }
-    }
-);
+  try {
+    const userId = req.user!.userId;
+    req.body.owner = { id: userId };
+    const place = await PlaceService.create(req.body);
+    res.status(201).json(place);
+  } catch (err) {
+    res.status(400).json({ error: "Could not create place" });
+  }
+});
 
 router.post("/:placeId/photos", authenticateJWT, upload.array("photos", 10), async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const { placeId } = req.params;
-      if (!req.files) return res.status(400).json({ error: "No files uploaded" });
-      const photos = (req.files as Express.Multer.File[]).map(file => ({
-        url: `/uploads/${file.filename}`
-      }));
-      const saved = await PlaceService.addPhotos(placeId, photos);
-      res.json(saved);
-    } catch (err) {
-      res.status(500).json({ error: "Could not upload photo(s)" });
-    }
+  try {
+    const { placeId } = req.params;
+    if (!req.files) return res.status(400).json({ error: "No files uploaded" });
+    const photos = (req.files as Express.Multer.File[]).map(file => ({
+      url: `/uploads/${file.filename}`
+    }));
+    const saved = await PlaceService.addPhotos(placeId, photos);
+    res.json(saved);
+  } catch (err) {
+    res.status(500).json({ error: "Could not upload photo(s)" });
   }
-);
+});
+
+router.patch("/:id", authenticateJWT, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user!.userId;
+    const place = await PlaceService.getById(id);
+
+    if (!place) return res.status(404).json({ error: "Place not found" });
+    if (!place.owner || place.owner.id !== userId) return res.status(403).json({ error: "Forbidden" });
+
+    const { title, description, price, latitude, longitude } = req.body;
+
+    const updated = await PlaceService.updateById(id, {
+      title,
+      description,
+      price,
+      latitude,
+      longitude,
+    });
+
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: "Could not update place" });
+  }
+});
 
 router.delete("/:id", authenticateJWT, async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -74,23 +97,28 @@ router.delete("/:id", authenticateJWT, async (req: AuthenticatedRequest, res: Re
     const place = await PlaceService.getById(id);
     if (!place) return res.status(404).json({ error: "Place not found" });
     if (!place.owner || place.owner.id !== req.user?.userId) return res.status(403).json({ error: "Forbidden" });
-    await PlaceService.deleteById(id);
-    res.status(204).end();
+
+    const deleted = await PlaceService.deleteById(id);
+
+    if (deleted.affected && deleted.affected > 0) {
+      res.status(204).end();
+    } else {
+      res.status(400).json({ error: "Could not delete place" });
+    }
   } catch (err) {
     res.status(400).json({ error: "Could not delete place" });
   }
 });
 
 router.delete("/:placeId/photos/:photoIndex", authenticateJWT, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const { placeId, photoIndex } = req.params;
-      const updated = await PlaceService.deletePhoto(placeId, parseInt(photoIndex, 10), req.user!.userId);
-      if (!updated) return res.status(403).json({ error: "Unauthorized or not found" });
-      res.status(204).end();
-    } catch (err) {
-      res.status(500).json({ error: "Could not delete photo" });
-    }
+  try {
+    const { placeId, photoIndex } = req.params;
+    const updated = await PlaceService.deletePhoto(placeId, parseInt(photoIndex, 10), req.user!.userId);
+    if (!updated) return res.status(403).json({ error: "Unauthorized or not found" });
+    res.status(204).end();
+  } catch (err) {
+    res.status(500).json({ error: "Could not delete photo" });
   }
-);
+});
 
 export default router;

@@ -41,6 +41,7 @@ export class Place extends BaseEntity {
 	amenities!: Amenity[];
 
 	@OneToMany(() => Review, (review) => review.place)
+	
 	reviews!: Review[];
 
 	@OneToMany(() => PlacePhoto, (photo) => photo.place, { cascade: true })
