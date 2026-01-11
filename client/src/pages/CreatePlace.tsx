@@ -1,6 +1,12 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { createPlace } from "../api/places";
 import { useAuth } from "../context/AuthContext";
+
+interface Amenity {
+  id: string;
+  name: string;
+  description: string;
+}
 
 function arrayfyFiles(fileList: FileList | null): File[] {
   if (!fileList) return [];
@@ -14,6 +20,16 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Amenities state
+  const [amenities, setAmenities] = useState<Amenity[]>([]);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:4000/api/v1/amenities")
+      .then(res => res.json())
+      .then(setAmenities);
+  }, []);
 
   if (!token) return <div>You need to be logged in to create a place.</div>;
 
@@ -38,6 +54,14 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
     setPhotos(old => old.filter((_, i) => i !== idx));
   }
 
+  function handleAmenityChange(id: string) {
+    setSelectedAmenities(prev =>
+      prev.includes(id)
+        ? prev.filter(a => a !== id)
+        : [...prev, id]
+    );
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
@@ -56,6 +80,7 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
         price: Number(form.price),
         latitude: Number(form.latitude),
         longitude: Number(form.longitude),
+        amenities: selectedAmenities
       }, token);
 
       if (photos.length && place.id) {
@@ -75,6 +100,7 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
       }
       setError(null);
       setForm({ title: "", description: "", price: "", latitude: "", longitude: "" });
+      setSelectedAmenities([]);
       setPhotos([]);
       onCreated();
     } catch (err: any) {
@@ -101,6 +127,35 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
       <label htmlFor="longitude" style={{ fontWeight: 500 }}>Longitude</label>
       <input id="longitude" name="longitude" type="number" placeholder="e.g. -58.3816" value={form.longitude} onChange={handleChange} required />
 
+      {/* Amenities section */}
+      <div style={{ margin: "20px 0 18px 0" }}>
+        <b style={{ fontSize: "1.08em" }}>Select amenities:</b>
+        <div style={{ marginTop: 12, marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 13 }}>
+          {amenities.length === 0 && <span style={{ color: "#aaa" }}>No amenities available</span>}
+          {amenities.map(a => (
+            <label key={a.id} style={{
+              background: "#f8fbff",
+              border: "1.5px solid #cbe0fe",
+              borderRadius: 8,
+              padding: "6px 12px",
+              fontWeight: 600,
+              fontSize: 14,
+              cursor: "pointer"
+            }}>
+              <input
+                type="checkbox"
+                checked={selectedAmenities.includes(a.id)}
+                value={a.id}
+                onChange={() => handleAmenityChange(a.id)}
+                style={{ marginRight: 7 }}
+              />
+              {a.name}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Photos */}
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}

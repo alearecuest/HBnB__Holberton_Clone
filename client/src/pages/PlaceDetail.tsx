@@ -9,6 +9,47 @@ function formatPrice(price: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
 }
 
+function DummyCalendar() {
+  const days = Array.from({ length: 35 });
+  return (
+    <div style={{
+      width: "100%",
+      maxWidth: 320,
+      borderRadius: 9,
+      background: "#f8fafb",
+      border: "1.5px solid #d4e8fe",
+      padding: "15px 14px 12px 14px",
+      fontFamily: "inherit",
+      margin: "24px 0 22px 0"
+    }}>
+      <div style={{ marginBottom: 13, fontWeight: 800, fontSize: "1.11rem" }}>Availability calendar (demo)</div>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(7, 1fr)",
+        gap: "4px"
+      }}>
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => (
+          <div key={d} style={{ textAlign: "center", fontWeight: 700, color: "#6b7699", fontSize: 13 }}>{d}</div>
+        ))}
+        {days.map((_, i) =>
+          <div key={i}
+               style={{
+                 width: "2.15em",
+                 height: "2.15em",
+                 borderRadius: ".58em",
+                 background: (i % 10 === 2) ? "#c9eafe" : "#ecf6fc",
+                 textAlign: "center",
+                 lineHeight: "2.15em",
+                 color: "#2e3c52",
+                 fontWeight: 600,
+                 opacity: (i + 1 < 4 || i > 29) ? 0.19 : 1
+               }}>{i + 1 <= 31 ? i + 1 : ""}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function GalleryGrid({
   photos,
   onShowAll,
@@ -201,17 +242,6 @@ export default function PlaceDetail({
       });
   }, [id]);
 
-  // <<<<<< DEBUG BLOQUE Crítico >>>>>>
-  if (user && place && place.owner) {
-    console.log("=========DEBUG - Auth/Owner check =========");
-    console.log("user:", user);
-    console.log("place.owner:", place.owner);
-    console.log("String(user.id):", String(user.id));
-    console.log("String(place.owner.id):", String(place.owner.id));
-    console.log("user is owner?", String(user.id) === String(place.owner.id));
-    console.log("===========================================");
-  }
-
   const isOwner = user && place && place.owner && String(user.id) === String(place.owner.id);
 
   async function handleDeletePhoto(idx: number) {
@@ -237,7 +267,7 @@ export default function PlaceDetail({
         maxWidth: 1100,
         margin: "2rem auto",
         display: "grid",
-        gridTemplateColumns: "1.6fr 0.9fr",
+        gridTemplateColumns: "1.6fr 0.96fr",
         gap: "44px",
         fontFamily: "Montserrat, Arial, sans-serif"
       }}
@@ -252,7 +282,6 @@ export default function PlaceDetail({
           marginTop: 6, fontSize: "2rem", fontWeight: 700, letterSpacing: "-1.5px"
         }}>{place.title}</h2>
         
-        {/* Edit button only for owner */}
         {isOwner && onEdit &&
           <button
             onClick={() => onEdit(place.id)}
@@ -270,21 +299,57 @@ export default function PlaceDetail({
               marginBottom: 16
             }}
           >
-            Editar publicación
+            Edit publication
           </button>
         }
-        
+
+        {/* Gallery */}
         <GalleryGrid
           photos={place.photos || []}
           onShowAll={() => setGalleryOpen(true)}
           onDeletePhoto={isOwner ? handleDeletePhoto : undefined}
           isOwner={!!isOwner}
         />
+
+        {/* Amenities (REAL amenity list from backend, including "Pets allowed" if checked) */}
+        <div style={{
+          margin: "28px 0 22px 0",
+          padding: "14px 0 8px 0",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 18
+        }}>
+          <span style={{ fontWeight: 800, fontSize: "1.17rem", marginRight: 18 }}>Amenities:</span>
+          {place.amenities && place.amenities.length > 0
+            ? place.amenities.map((am: any) => (
+              <div key={am.id}
+                style={{
+                  background: "#f9fbfe",
+                  borderRadius: 9,
+                  padding: "6px 10px",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: "#274e88",
+                  display: "flex",
+                  alignItems: "center",
+                  boxShadow: "0 2px 6px #acc7fe13"
+                }}>
+                {am.name}
+              </div>
+            ))
+            : <span style={{ color: "#998" }}>No amenities listed</span>
+          }
+        </div>
+
         <div style={{ color: "#7a7a7a", marginBottom: 13, fontSize: "1.11rem" }}>{place.description}</div>
-        <div style={{ fontSize: "1.18rem", margin: "10px 0 25px 0", color: "#2a446e" }}>
+        <div style={{ fontSize: "1.18rem", margin: "10px 0 9px 0", color: "#2a446e" }}>
           <b>Price: </b>{formatPrice(place.price)}
           <span style={{ marginLeft: 18 }}><b>Latitude:</b> {place.latitude}, <b>Longitude:</b> {place.longitude}</span>
         </div>
+
+        {/* Dummy calendar */}
+        <DummyCalendar />
+
         <Reviews placeId={place.id} />
         
         {isOwner && (

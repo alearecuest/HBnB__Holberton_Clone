@@ -11,6 +11,75 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
+export function PlacesMap({
+  places,
+  onMarkerClick,
+  height = "400px"
+}: {
+  places: Array<{
+    id: string;
+    title: string;
+    latitude: number;
+    longitude: number;
+    price: number;
+    photos?: { url: string }[];
+  }>;
+  onMarkerClick?: (place: any) => void;
+  height?: string;
+}) {
+  if (!places || places.length === 0)
+    return <div style={{ color: "#777", padding: "2em", textAlign: "center" }}>No places on map.</div>;
+  const avgLat = places.reduce((sum, p) => sum + p.latitude, 0) / places.length;
+  const avgLon = places.reduce((sum, p) => sum + p.longitude, 0) / places.length;
+
+  return (
+    <div style={{ width: "100%", height }}>
+      <MapContainer center={[avgLat, avgLon]} zoom={10} style={{ width: "100%", height }}>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {places.map((place) => (
+          <Marker
+            key={place.id}
+            position={[place.latitude, place.longitude]}
+            eventHandlers={{
+              click: () => onMarkerClick?.(place),
+            }}
+          >
+            <Popup>
+              <b>{place.title}</b>
+              <br />
+              Precio: ${place.price}
+              {place.photos && place.photos[0] && (
+                <div>
+                  <img src={`http://localhost:4000${place.photos[0].url}`} alt={place.title}
+                    style={{ maxWidth: 120, borderRadius: 6, marginTop: 5 }} />
+                </div>
+              )}
+              <br />
+              <button
+                style={{
+                  marginTop: 5,
+                  padding: "4px 12px",
+                  borderRadius: "6px",
+                  border: "none",
+                  background: "#2b65ec",
+                  color: "#fff",
+                  cursor: "pointer"
+                }}
+                onClick={() => onMarkerClick?.(place)}
+              >
+                Ver detalle
+              </button>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
+  );
+}
+
 export default function PlaceMap({
   latitude,
   longitude,
@@ -41,9 +110,7 @@ export default function PlaceMap({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <Marker position={[latitude, longitude]}>
-          <Popup>
-            {title}
-          </Popup>
+          <Popup>{title}</Popup>
         </Marker>
       </MapContainer>
     </div>

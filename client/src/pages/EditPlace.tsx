@@ -1,5 +1,11 @@
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+
+interface Amenity {
+  id: string;
+  name: string;
+  description: string;
+}
 
 export default function EditPlace({ id, onBack }: { id: string, onBack: () => void }) {
   const [place, setPlace] = useState<any>(null);
@@ -11,12 +17,20 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
   const [price, setPrice] = useState<number>(0);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
-  
   const [saving, setSaving] = useState(false);
-  const [addPhotos, setAddPhotos] = useState<File[]>([]);
+
+  const [amenities, setAmenities] = useState<Amenity[]>([]);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
   const { user, token } = useAuth();
 
+  useEffect(() => {
+    fetch(`http://localhost:4000/api/v1/amenities`)
+      .then(res => res.json())
+      .then(data => setAmenities(data));
+  }, []);
+
+  // Load place data
   useEffect(() => {
     fetch(`http://localhost:4000/api/v1/places/${id}`)
       .then(res => res.json())
@@ -27,6 +41,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
         setPrice(data.price || 0);
         setLatitude(data.latitude?.toString() || "");
         setLongitude(data.longitude?.toString() || "");
+        setSelectedAmenities((data.amenities || []).map((a: any) => a.id));
         setLoading(false);
       })
       .catch(() => {
@@ -36,6 +51,14 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
   }, [id]);
 
   const isOwner = user && place && place.owner && user.id === place.owner.id;
+
+  function handleAmenityChange(amenityId: string) {
+    setSelectedAmenities(prev =>
+      prev.includes(amenityId)
+        ? prev.filter(id => id !== amenityId)
+        : [...prev, amenityId]
+    );
+  }
 
   async function handleDeletePhoto(idx: number) {
     if (!window.confirm("Delete this photo?")) return;
@@ -91,9 +114,10 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
     const patch = {
       title,
       description,
-      price: parseFloat(price as any),
+      price: parseFloat(`${price}`),
       latitude: parseFloat(latitude),
-      longitude: parseFloat(longitude)
+      longitude: parseFloat(longitude),
+      amenities: selectedAmenities // ¡esto es clave!
     };
     const res = await fetch(`http://localhost:4000/api/v1/places/${place.id}`, {
       method: "PATCH",
@@ -106,8 +130,8 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
     setSaving(false);
     if (res.ok) {
       alert("Saved!");
-      const updated = await fetch(`http://localhost:4000/api/v1/places/${place.id}`).then(r => r.json());
-      setPlace(updated);
+      onBack();
+      return;
     } else {
       alert("Could not save changes.");
     }
@@ -203,6 +227,36 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             required
           />
         </label>
+        
+        {/* Amenities */}
+        <div style={{ margin: "20px 0 18px 0" }}>
+          <b style={{ fontSize: "1.08em" }}>Select amenities:</b>
+          <div style={{ marginTop: 12, marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 13 }}>
+            {amenities.length === 0 && <span style={{ color: "#aaa" }}>No amenities available</span>}
+            {amenities.map(a => (
+              <label key={a.id} style={{
+                background: "#f8fbff",
+                border: "1.5px solid #cbe0fe",
+                borderRadius: 8,
+                padding: "6px 12px",
+                fontWeight: 600,
+                fontSize: 14,
+                cursor: "pointer"
+              }}>
+                <input
+                  type="checkbox"
+                  checked={selectedAmenities.includes(a.id)}
+                  value={a.id}
+                  onChange={() => handleAmenityChange(a.id)}
+                  style={{ marginRight: 7 }}
+                />
+                {a.name}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Photos */}
         <div style={{ margin: "14px 0 20px 0" }}>
           <b style={{fontSize:"1.07em"}}>Photos:</b>
           <div style={{

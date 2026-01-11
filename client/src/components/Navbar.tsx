@@ -9,7 +9,11 @@ export default function Navbar({ onLoginClick, onRegisterClick, onMenuClick }: {
   const { token, user, logout } = useAuth();
   return (
     <nav style={{ display: "flex", alignItems: "center", gap: 24, margin: "22px 20px", position: "relative" }}>
-      <img src={logo} alt="HBnB logo" width={120} height={40} style={{ marginRight: 26, marginLeft: 4 }} />
+      <img
+        src={logo} alt="HBnB logo" width={120} height={40} style={{ marginRight: 26, marginLeft: 4, cursor: "pointer" }}
+        onClick={() => window.location.href = "/"}
+        title="Ir a inicio"
+      />
       <div style={{
         marginLeft: "auto",
         display: window.innerWidth < 850 ? "none" : "block"
