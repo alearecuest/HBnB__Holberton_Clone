@@ -21,3 +21,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Hardcode User
+server/src/scripts/seedUser.ts

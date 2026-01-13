@@ -10,7 +10,7 @@ const PlacePhoto_1 = require("./src/entities/PlacePhoto");
 const database = process.env.NODE_ENV === "test" ? ":memory:" : "hbnb.sqlite";
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "sqlite",
-    database,
+    database: "hbnb.sqlite",
     synchronize: true,
     logging: false,
     entities: [PlacePhoto_1.PlacePhoto, User_1.User, Place_1.Place, Review_1.Review, Amenity_1.Amenity],
