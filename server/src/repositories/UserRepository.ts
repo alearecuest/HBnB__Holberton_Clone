@@ -1,4 +1,4 @@
-import { AppDataSource } from "../../ormconfig";
+import { AppDataSource } from "../ormconfig";
 import { User } from "../entities/User";
 import { Repository } from "typeorm";
 

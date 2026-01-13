@@ -1,4 +1,4 @@
-import { AppDataSource } from "../../ormconfig";
+import { AppDataSource } from "../ormconfig";
 import { PlacePhoto } from "../entities/PlacePhoto";
 import { Repository } from "typeorm";
 

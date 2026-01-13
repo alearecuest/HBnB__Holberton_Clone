@@ -10,7 +10,9 @@ export class PlaceService {
     const place = placeRepository.create(rest);
 
     if (amenityIds && Array.isArray(amenityIds) && amenityIds.length > 0) {
-      const amenities = await amenityRepository.findByIds(amenityIds as string[]);
+      const amenities = await amenityRepository.findByIds(
+        amenityIds.map((a: any) => typeof a === "string" || typeof a === "number" ? a : a.id)
+      );
       place.amenities = amenities;
     }
 
@@ -71,7 +73,7 @@ export class PlaceService {
       relations: ["photos", "owner", "amenities"]
     });
     if (amenityIds && Array.isArray(amenityIds) && place) {
-      const amenities = await amenityRepository.findByIds(amenityIds as string[]);
+      const amenities = await amenityRepository.findByIds(amenityIds.map((a: any) => typeof a === "string" ? a : (a.id ?? a)));
       place.amenities = amenities;
       await placeRepository.save(place);
     }

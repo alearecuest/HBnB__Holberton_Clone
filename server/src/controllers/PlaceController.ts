@@ -75,7 +75,14 @@ router.patch("/:id", authenticateJWT, async (req: AuthenticatedRequest, res: Res
     if (!place) return res.status(404).json({ error: "Place not found" });
     if (!place.owner || place.owner.id !== userId) return res.status(403).json({ error: "Forbidden" });
 
-    const { title, description, price, latitude, longitude } = req.body;
+    const {
+      title,
+      description,
+      price,
+      latitude,
+      longitude,
+      amenities,
+    } = req.body;
 
     const updated = await PlaceService.updateById(id, {
       title,
@@ -83,6 +90,7 @@ router.patch("/:id", authenticateJWT, async (req: AuthenticatedRequest, res: Res
       price,
       latitude,
       longitude,
+      amenities,
     });
 
     res.json(updated);

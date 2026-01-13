@@ -4,6 +4,20 @@ import PhotoGalleryLightbox from "../components/PhotoGalleryLightbox";
 import BookingCardSidebar from "../components/BookingCardSidebar";
 import PlaceMap from "../components/PlaceMap";
 import { useAuth } from "../context/AuthContext";
+import { FaWifi, FaTv, FaParking, FaSwimmer } from "react-icons/fa";
+import { MdOutlineAcUnit, MdPets } from "react-icons/md";
+import { GiCookingPot, GiBarbecue } from "react-icons/gi";
+
+const iconsMap: { [key: string]: JSX.Element } = {
+  FaWifi: <FaWifi style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
+  FaTv: <FaTv style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
+  GiCookingPot: <GiCookingPot style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
+  MdOutlineAcUnit: <MdOutlineAcUnit style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
+  FaParking: <FaParking style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
+  MdPets: <MdPets style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
+  FaSwimmer: <FaSwimmer style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
+  GiBarbecue: <GiBarbecue style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
+};
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
@@ -311,7 +325,7 @@ export default function PlaceDetail({
           isOwner={!!isOwner}
         />
 
-        {/* Amenities (REAL amenity list from backend, including "Pets allowed" if checked) */}
+        {/* Amenities */}
         <div style={{
           margin: "28px 0 22px 0",
           padding: "14px 0 8px 0",
@@ -326,7 +340,7 @@ export default function PlaceDetail({
                 style={{
                   background: "#f9fbfe",
                   borderRadius: 9,
-                  padding: "6px 10px",
+                  padding: "6px 12px",
                   fontSize: 15,
                   fontWeight: 600,
                   color: "#274e88",
@@ -334,6 +348,7 @@ export default function PlaceDetail({
                   alignItems: "center",
                   boxShadow: "0 2px 6px #acc7fe13"
                 }}>
+                {am.icon && iconsMap[am.icon] ? iconsMap[am.icon] : <FaTv style={{marginRight:6}}/>}
                 {am.name}
               </div>
             ))

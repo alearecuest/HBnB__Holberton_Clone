@@ -1,4 +1,4 @@
-import { Router, Response } from "express";
+import { Router, Response, Request } from "express";
 import { ReviewService } from "../services/ReviewService";
 import { validateBody } from "../middlewares/validateBody";
 import { reviewCreateSchema, reviewUpdateSchema } from "../schemas/reviewSchema";
@@ -6,7 +6,7 @@ import { authenticateJWT, AuthenticatedRequest } from "../middlewares/auth";
 
 const router = Router({ mergeParams: true });
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request<{ placeId: string }>, res) => {
     const { placeId } = req.params;
     try {
         const reviews = await ReviewService.findByPlace(placeId);
@@ -20,7 +20,7 @@ router.post(
     "/",
     authenticateJWT,
     validateBody(reviewCreateSchema),
-    async (req: AuthenticatedRequest, res: Response) => {
+    async (req: AuthenticatedRequest & Request<{ placeId: string }>, res: Response) => {
         try {
             const { placeId } = req.params;
             const userId = req.user!.userId;
@@ -82,7 +82,7 @@ router.delete(
 
 router.get(
     "/place/:placeId",
-    async (req, res) => {
+    async (req: Request<{ placeId: string }>, res) => {
         const { placeId } = req.params;
         const reviews = await ReviewService.findByPlace(placeId);
         res.json(reviews);

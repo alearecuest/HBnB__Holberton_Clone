@@ -10,6 +10,9 @@ export class Amenity extends BaseEntity {
     @Column({ type: "varchar", length: 255 })
     description!: string;
 
+    @Column({ type: "varchar", length: 80, nullable: true })
+    icon?: string;
+
     @ManyToMany(() => Place, (place) => place.amenities)
     places!: Place[];
 }

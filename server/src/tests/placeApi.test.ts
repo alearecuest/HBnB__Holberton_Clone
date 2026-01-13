@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../app";
-import { AppDataSource } from "../../ormconfig";
+import { AppDataSource } from "../ormconfig";
 
 let jwt: string;
 

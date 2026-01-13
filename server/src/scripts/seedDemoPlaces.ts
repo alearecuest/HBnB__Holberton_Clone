@@ -1,4 +1,4 @@
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../ormconfig";
 import { Place } from "../entities/Place";
 import { PlacePhoto } from "../entities/PlacePhoto";
 import { User } from "../entities/User";
