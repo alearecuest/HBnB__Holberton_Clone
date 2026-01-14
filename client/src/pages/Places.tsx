@@ -1,14 +1,25 @@
-import React from "react";
-import { PlacesMap } from "../components/PlaceMap";
+import React, { useEffect, useState } from "react";
+import { fetchPlaces } from "../api/places";
+import PlacesMap from "../components/PlaceMap";
 import FeaturedCarousel from "../components/FeaturedCarousel";
 
-export default function Places({ places, loading, onDetail }: { places: any[], loading: boolean, onDetail?: (id: string) => void }) {
+export default function Places() {
+  const [places, setPlaces] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchPlaces()
+      .then((data) => setPlaces(data))
+      .catch(() => setPlaces([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   function formatPrice(price: number) {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
   }
 
   const isMobile = window.innerWidth < 900;
-
   const featured = Array.isArray(places) ? places.slice(0, 5) : [];
 
   return (
@@ -19,7 +30,7 @@ export default function Places({ places, loading, onDetail }: { places: any[], l
         </h2>
         <FeaturedCarousel
           places={featured}
-          onSelect={id => onDetail && onDetail(id)}
+          onSelect={id => { /* implement navigation or modal if needed */ }}
         />
       </div>
       <div style={{
@@ -43,7 +54,6 @@ export default function Places({ places, loading, onDetail }: { places: any[], l
               <div
                 key={place.id}
                 className="place-card"
-                onClick={onDetail ? () => onDetail(place.id) : undefined}
                 tabIndex={0}
               >
                 {place.photos && place.photos.length > 0 && place.photos[0]?.url ? (
@@ -79,7 +89,7 @@ export default function Places({ places, loading, onDetail }: { places: any[], l
         }}>
           <PlacesMap
             places={places}
-            onMarkerClick={p => onDetail && onDetail(p.id)}
+            onMarkerClick={p => { /* implement navigation or modal if needed */ }}
             height={isMobile ? "340px" : "500px"}
           />
         </div>

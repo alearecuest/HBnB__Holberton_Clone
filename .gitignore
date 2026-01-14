@@ -24,3 +24,6 @@ Thumbs.db
 
 # Hardcode User
 server/src/scripts/seedUser.ts
+
+# HBnB Database
+/hbnb.sqlite

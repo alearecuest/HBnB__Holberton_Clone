@@ -17,10 +17,8 @@ export class UserService {
 
     static async validateUser(email: string, password: string): Promise<User | null> {
         const user = await this.findByEmail(email);
-        console.log("USER FOUND:", user);
         if (!user) return null;
         const valid = await comparePassword(password, user.password);
-        console.log("PASSWORD VALID?", valid);
         return valid ? user : null;
     }
 }

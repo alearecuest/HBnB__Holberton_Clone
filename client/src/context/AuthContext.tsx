@@ -14,19 +14,20 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const initialUser = localStorage.getItem("user");
-const initialToken = localStorage.getItem("token");
-
 const AuthContext = createContext<AuthContextType>({
   token: null,
   user: null,
   login: () => {},
-  logout: () => {}
+  logout: () => {},
 });
 
-export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
-  const [token, setToken] = useState<string | null>(initialToken);
-  const [user, setUser] = useState<User | null>(initialUser ? JSON.parse(initialUser) : null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
+  const [user, setUser] = useState<User | null>(
+    localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null
+  );
 
   useEffect(() => {
     if (token && user) {
@@ -38,9 +39,9 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
     }
   }, [token, user]);
 
-  function login(_token: string, _user: User) {
-    setToken(_token);
-    setUser(_user);
+  function login(newToken: string, newUser: User) {
+    setToken(newToken);
+    setUser(newUser);
   }
   function logout() {
     setToken(null);

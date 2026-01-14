@@ -13,9 +13,9 @@ import reservationRouter from "./controllers/ReservationRouter";
 dotenv.config();
 
 const app = express();
+app.use(express.json());
 
 app.use("/api/v1", reservationRouter);
-
 app.use("/api/v1", availabilityRouter);
 
 app.use(cors({
@@ -25,17 +25,13 @@ app.use(cors({
 
 app.options('*', cors());
 
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
-
-app.use(express.json());
-
 app.get("/", (_req, res) => res.send("HBnB API is running."));
 
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/places", placeRouter);
 app.use("/api/v1/amenities", amenityRouter);
-
 app.use("/api/v1/places/:placeId/reviews", reviewRouter);
 
 export default app;

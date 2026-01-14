@@ -16,4 +16,25 @@ router.post("/login", async (req: Request, res: Response) => {
     res.json({ token, user: sanitizedUser });
 });
 
+router.post("/register", async (req: Request, res: Response) => {
+    const { email, password, firstName, lastName } = req.body;
+    if (!email || !password || !firstName || !lastName) {
+        return res.status(400).json({ error: "Email, password, firstName and lastName required" });
+    }
+
+    const existing = await UserService.findByEmail(email);
+    if (existing) {
+        return res.status(409).json({ error: "User already exists" });
+    }
+
+    try {
+        const user = await UserService.create({ email, password, firstName, lastName });
+        const token = generateToken({ userId: user.id, isAdmin: user.isAdmin });
+        const { password: _, ...sanitizedUser } = user;
+        return res.status(201).json({ token, user: sanitizedUser });
+    } catch (err: any) {
+        return res.status(500).json({ error: err.message });
+    }
+});
+
 export default router;

@@ -1,11 +1,12 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { reservationRepository } from "../repositories/ReservationRepository";
 import { placeRepository } from "../repositories/PlaceRepository";
 import { AppDataSource } from "../ormconfig";
 import { User } from "../entities/User";
 import { Place } from "../entities/Place";
+import { AuthenticatedRequest } from "../middlewares/auth";
 
-export const getReservationsForPlace = async (req: Request, res: Response) => {
+export const getReservationsForPlace = async (req: Response, res: Response) => {
   const { placeId } = req.params;
   const reservations = await reservationRepository.find({
     where: { place: { id: placeId } },
@@ -15,8 +16,8 @@ export const getReservationsForPlace = async (req: Request, res: Response) => {
   return res.json(reservations);
 };
 
-export const getReservationsForUser = async (req: Request, res: Response) => {
-  const userId = req.user.id;
+export const getReservationsForUser = async (req: AuthenticatedRequest, res: Response) => {
+  const userId = req.user?.userId;
   const reservations = await reservationRepository.find({
     where: { user: { id: userId } },
     order: { from: "ASC" },
@@ -25,10 +26,10 @@ export const getReservationsForUser = async (req: Request, res: Response) => {
   return res.json(reservations);
 };
 
-export const createReservation = async (req: Request, res: Response) => {
+export const createReservation = async (req: AuthenticatedRequest, res: Response) => {
   const { placeId } = req.params;
   const { from, to } = req.body;
-  const userId = req.user.id;
+  const userId = req.user?.userId;
 
   if (!from || !to) {
     return res.status(400).json({ error: "'from' and 'to' dates are required" });
@@ -66,9 +67,9 @@ export const createReservation = async (req: Request, res: Response) => {
   return res.status(201).json(reservation);
 };
 
-export const deleteReservation = async (req: Request, res: Response) => {
+export const deleteReservation = async (req: AuthenticatedRequest, res: Response) => {
   const { id } = req.params;
-  const userId = req.user.id;
+  const userId = req.user?.userId;
 
   const reservation = await reservationRepository.findOne({
     where: { id },
@@ -76,7 +77,7 @@ export const deleteReservation = async (req: Request, res: Response) => {
   });
   if (!reservation) return res.status(404).json({ error: "Reservation not found" });
 
-  if (reservation.user.id !== userId && !req.user.isAdmin) {
+  if (reservation.user.id !== userId && !req.user?.isAdmin) {
     return res.status(403).json({ error: "Not authorized" });
   }
 

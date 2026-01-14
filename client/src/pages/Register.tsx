@@ -1,19 +1,32 @@
 import React, { useState } from "react";
 import { register } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Register({ onSuccess }: { onSuccess?: () => void }) {
-  const [form, setForm] = useState({ email: "", password: "", firstName: "", lastName: "" });
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+  });
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     try {
       await register(form.email, form.password, form.firstName, form.lastName);
       setSuccess(true);
-      setError(null);
+      setLoading(false);
       if (onSuccess) onSuccess();
+      setTimeout(() => navigate("/login"), 1800);
     } catch (err: any) {
+      setLoading(false);
       setError(err.message || "Error registering user");
     }
   }
@@ -25,14 +38,20 @@ export default function Register({ onSuccess }: { onSuccess?: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 370, width: "97vw", margin: "auto", marginTop: 32 }}>
-      <h2 style={{ textAlign:"center", marginBottom:17 }}>Register</h2>
+      <h2 style={{ textAlign: "center", marginBottom: 17 }}>Register</h2>
       <input name="firstName" placeholder="First name" value={form.firstName} onChange={handleChange} required />
       <input name="lastName" placeholder="Last name" value={form.lastName} onChange={handleChange} required />
       <input name="email" placeholder="Email" type="email" value={form.email} onChange={handleChange} required />
       <input name="password" placeholder="Password" type="password" value={form.password} onChange={handleChange} required />
-      <button type="submit" style={{marginTop:14}}>Create user</button>
-      {success && <div style={{ color: "green", marginTop: 14, textAlign:"center" }}>User registered! You can now <b>sign in</b>.</div>}
-      {error && <div style={{ color: "red", marginTop: 10, textAlign:"center" }}>{error}</div>}
+      <button type="submit" style={{ marginTop: 14 }}>
+        {loading ? "Registering..." : "Create user"}
+      </button>
+      {success && (
+        <div style={{ color: "green", marginTop: 14, textAlign: "center" }}>
+          User registered! Redirecting to <b>sign in</b>...
+        </div>
+      )}
+      {error && <div style={{ color: "red", marginTop: 10, textAlign: "center" }}>{error}</div>}
     </form>
   );
 }
