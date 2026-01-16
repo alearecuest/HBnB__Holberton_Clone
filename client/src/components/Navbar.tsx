@@ -1,6 +1,8 @@
 import { useAuth } from "../context/AuthContext";
 import logo from "/logo.png";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import React from "react";
 
 export default function Navbar({
   onLoginClick,
@@ -13,6 +15,12 @@ export default function Navbar({
 }) {
   const { token, user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
+  const languages = [
+    { code: "en", label: "EN" },
+    { code: "es", label: "ES" }
+  ];
 
   return (
     <nav
@@ -25,15 +33,14 @@ export default function Navbar({
         minHeight: 64,
       }}
     >
-      {/* Left: Logo */}
       <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
         <img
           src={logo}
           alt="HBnB logo"
-          height={48}
+          height={40}
           style={{
             cursor: "pointer",
-            marginRight: 14,
+            marginRight: 12,
             marginLeft: 4,
             objectFit: "contain",
           }}
@@ -52,7 +59,7 @@ export default function Navbar({
             borderRadius: 6,
           }}
         >
-          Places
+          {t("navbar.places")}
         </button>
         <button
           onClick={() => navigate("/create")}
@@ -66,15 +73,30 @@ export default function Navbar({
             borderRadius: 6,
           }}
         >
-          Create Place
+          {t("navbar.create")}
         </button>
       </div>
-      {/* Right: Auth buttons or greeting */}
-      <div style={{
-        display: "flex",
-        gap: 12,
-        alignItems: "center"
-      }}>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        {/* Idioma (EN/ES) selector */}
+        <select
+          value={i18n.language}
+          onChange={e => i18n.changeLanguage(e.target.value)}
+          style={{
+            padding: "6px 10px",
+            borderRadius: 6,
+            border: "1px solid #ccd",
+            background: "#fff",
+            fontWeight: 500,
+            fontSize: ".98rem",
+            cursor: "pointer"
+          }}
+          aria-label="Select language"
+        >
+          {languages.map(lan => (
+            <option value={lan.code} key={lan.code}>{lan.label}</option>
+          ))}
+        </select>
         {!token ? (
           <>
             <button
@@ -89,7 +111,7 @@ export default function Navbar({
                 cursor: "pointer"
               }}
             >
-              Login
+              {t("navbar.login")}
             </button>
             <button
               onClick={onRegisterClick}
@@ -103,13 +125,13 @@ export default function Navbar({
                 cursor: "pointer"
               }}
             >
-              Register
+              {t("navbar.register")}
             </button>
           </>
         ) : (
           <>
-            <span style={{ marginRight: 2, color: "#21335c", fontWeight: 500 }}>
-              Hello, {user?.firstName || user?.email}!
+            <span style={{ color: "#21335c", fontWeight: 500, marginRight: 2 }}>
+              {t("navbar.hello", { name: user?.firstName || user?.email })}
             </span>
             <button
               onClick={logout}
@@ -123,7 +145,7 @@ export default function Navbar({
                 cursor: "pointer"
               }}
             >
-              Sign out
+              {t("navbar.signout")}
             </button>
           </>
         )}

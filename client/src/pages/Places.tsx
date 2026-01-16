@@ -3,11 +3,14 @@ import { fetchPlaces } from "../api/places";
 import { PlacesMap } from "../components/PlaceMap";
 import FeaturedCarousel from "../components/FeaturedCarousel";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import SearchBar from "../components/SearchBar";
 
 export default function Places() {
   const [places, setPlaces] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     setLoading(true);
@@ -18,7 +21,10 @@ export default function Places() {
   }, []);
 
   function formatPrice(price: number) {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+    return new Intl.NumberFormat(i18n.language === 'es' ? 'es-UY' : 'en-US', {
+      style: 'currency',
+      currency: i18n.language === 'es' ? 'UYU' : 'USD'
+    }).format(price);
   }
 
   const isMobile = window.innerWidth < 900;
@@ -36,8 +42,12 @@ export default function Places() {
         color: "#1A3366",
         letterSpacing: -2,
       }}>
-        Find your next destination with HBnB
+        {t("home.hero")}
       </div>
+
+      <SearchBar onSearch={params => {
+        console.log("Searching!", params);
+      }} />
 
       <div style={{ maxWidth: 1370, margin: "0 auto" }}>
         <h2 style={{
@@ -48,7 +58,7 @@ export default function Places() {
           letterSpacing: -1,
           color: "#204078"
         }}>
-          Featured Places
+          {t("home.featured")}
         </h2>
         <FeaturedCarousel
           places={featured}
@@ -65,9 +75,11 @@ export default function Places() {
         margin: "20px auto 0 auto"
       }}>
         <div style={{ flex: 2, minWidth: 350 }}>
-          <h2 style={{ marginTop: 0 }}>Places</h2>
-          {loading && <div>Loading...</div>}
-          {(!places || places.length === 0) && !loading && <div>No places yet.</div>}
+          <h2 style={{ marginTop: 0 }}>{t("home.places")}</h2>
+          {loading && <div>{t("general.loading", "Loading...")}</div>}
+          {(!places || places.length === 0) && !loading && (
+            <div>{t("general.noplaces", "No places yet.")}</div>
+          )}
           <div className="cards-grid">
             {places.map((place) => (
               <div
@@ -94,7 +106,7 @@ export default function Places() {
                       fontSize: "1.7rem",
                     }}
                   >
-                    No image
+                    {t("general.noimage", "No image")}
                   </div>
                 )}
                 <div className="place-card-content">

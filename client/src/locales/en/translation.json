@@ -1,0 +1,27 @@
+{
+  "home": {
+    "hero": "Find your next destination with HBnB",
+    "featured": "Featured Places",
+    "places": "Places"
+  },
+  "navbar": {
+    "places": "Places",
+    "create": "Create Place",
+    "login": "Login",
+    "register": "Register",
+    "signout": "Sign out",
+    "hello": "Hello, {{name}}!"
+  },
+  "general": {
+    "loading": "Loading...",
+    "noplaces": "No places yet.",
+    "noimage": "No image"
+  },
+  "search": {
+    "location": "Where to?",
+    "from": "From",
+    "to": "To",
+    "guests": "Guests",
+    "search": "Search"
+  }
+}

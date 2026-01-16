@@ -1,0 +1,27 @@
+{
+  "home": {
+    "hero": "Encuentra tu próximo destino con HBnB",
+    "featured": "Lugares destacados",
+    "places": "Propiedades"
+  },
+  "navbar": {
+    "places": "Propiedades",
+    "create": "Crear propiedad",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "signout": "Cerrar sesión",
+    "hello": "¡Hola, {{name}}!"
+  },
+	"general": {
+    "loading": "Cargando...",
+    "noplaces": "Aún no hay propiedades.",
+    "noimage": "Sin imagen"
+  },
+	"search": {
+		"location": "¿Dónde?",
+		"from": "Desde",
+		"to": "Hasta",
+		"guests": "Huéspedes",
+		"search": "Buscar"
+	}
+}
