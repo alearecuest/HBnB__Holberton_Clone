@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import Reviews from "../components/Reviews";
 import PhotoGalleryLightbox from "../components/PhotoGalleryLightbox";
 import BookingCardSidebar from "../components/BookingCardSidebar";
@@ -231,29 +232,23 @@ function GalleryGrid({
   );
 }
 
-export default function PlaceDetail({
-  id,
-  onBack,
-  onEdit
-}: {
-  id: string,
-  onBack: () => void,
-  onEdit?: (id: string) => void
-}) {
+export default function PlaceDetail() {
+  const { id } = useParams<{ id: string }>();
   const [place, setPlace] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [galleryOpen, setGalleryOpen] = useState(false);
 
   const { user, token } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) return;
+    setLoading(true);
     fetch(`http://localhost:4000/api/v1/places/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setPlace(data);
-        setLoading(false);
-      });
+      .then(res => res.ok ? res.json() : Promise.reject('Not found'))
+      .then(data => setPlace(data))
+      .catch(() => setPlace(null))
+      .finally(() => setLoading(false));
   }, [id]);
 
   const isOwner = user && place && place.owner && String(user.id) === String(place.owner.id);
@@ -272,8 +267,8 @@ export default function PlaceDetail({
     }
   }
 
-  if (loading) return <div>Loading...</div>;
-  if (!place) return <div>Not found</div>;
+  if (loading) return <div style={{margin:40, fontSize:"1.5em"}}>Loading...</div>;
+  if (!place) return <div style={{margin:40, fontSize:"1.5em", color:"#a00"}}>Not found</div>;
 
   return (
     <div
@@ -288,7 +283,7 @@ export default function PlaceDetail({
     >
       {/* LEFT COLUMN */}
       <div>
-        <button onClick={onBack} style={{
+        <button onClick={() => navigate("/")} style={{
           marginBottom: 18, background: "#eee", border: "none", padding: "8px 16px", borderRadius: 7, cursor: "pointer", fontSize: "1rem"
         }}>← Back to places</button>
         
@@ -296,9 +291,9 @@ export default function PlaceDetail({
           marginTop: 6, fontSize: "2rem", fontWeight: 700, letterSpacing: "-1.5px"
         }}>{place.title}</h2>
         
-        {isOwner && onEdit &&
+        {isOwner &&
           <button
-            onClick={() => onEdit(place.id)}
+            onClick={() => navigate(`/places/${place.id}/edit`)}
             style={{
               background: "#3650f7",
               color: "#fff",
@@ -377,7 +372,7 @@ export default function PlaceDetail({
                 });
                 if (res.ok) {
                   alert("Place deleted!");
-                  onBack();
+                  navigate("/");
                 } else {
                   alert("Error deleting place.");
                 }

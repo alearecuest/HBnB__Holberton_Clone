@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { fetchPlaces } from "../api/places";
-import PlacesMap from "../components/PlaceMap";
+import { PlacesMap } from "../components/PlaceMap";
 import FeaturedCarousel from "../components/FeaturedCarousel";
+import { useNavigate } from "react-router-dom";
 
 export default function Places() {
   const [places, setPlaces] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -24,13 +26,33 @@ export default function Places() {
 
   return (
     <div>
+      <div style={{
+        width: "100%",
+        maxWidth: 1020,
+        margin: "30px auto 32px auto",
+        textAlign: "center",
+        fontWeight: 800,
+        fontSize: "2.1rem",
+        color: "#1A3366",
+        letterSpacing: -2,
+      }}>
+        Find your next destination with HBnB
+      </div>
+
       <div style={{ maxWidth: 1370, margin: "0 auto" }}>
-        <h2 style={{ marginLeft: 8, marginTop: 12, marginBottom: 8, fontSize: "2rem", letterSpacing: -1, color: "#204078" }}>
+        <h2 style={{
+          marginLeft: 8,
+          marginTop: 6,
+          marginBottom: 8,
+          fontSize: "2rem",
+          letterSpacing: -1,
+          color: "#204078"
+        }}>
           Featured Places
         </h2>
         <FeaturedCarousel
           places={featured}
-          onSelect={id => { /* implement navigation or modal if needed */ }}
+          onSelect={id => navigate(`/places/${id}`)}
         />
       </div>
       <div style={{
@@ -40,12 +62,9 @@ export default function Places() {
         justifyContent: "center",
         alignItems: "flex-start",
         maxWidth: 1370,
-        margin: "15px auto 0 auto"
+        margin: "20px auto 0 auto"
       }}>
         <div style={{ flex: 2, minWidth: 350 }}>
-          <div className="hero-banner" style={{ marginBottom: 12 }}>
-            Find your next destination with <b>HBnB</b>
-          </div>
           <h2 style={{ marginTop: 0 }}>Places</h2>
           {loading && <div>Loading...</div>}
           {(!places || places.length === 0) && !loading && <div>No places yet.</div>}
@@ -55,6 +74,8 @@ export default function Places() {
                 key={place.id}
                 className="place-card"
                 tabIndex={0}
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate(`/places/${place.id}`)}
               >
                 {place.photos && place.photos.length > 0 && place.photos[0]?.url ? (
                   <img
@@ -63,7 +84,16 @@ export default function Places() {
                     className="place-card-image"
                   />
                 ) : (
-                  <div className="place-card-image" style={{ display: "flex", alignItems: "center", justifyContent: "center", color: "#ccc", fontSize: "1.7rem" }}>
+                  <div
+                    className="place-card-image"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#ccc",
+                      fontSize: "1.7rem",
+                    }}
+                  >
                     No image
                   </div>
                 )}
@@ -88,8 +118,13 @@ export default function Places() {
           height: "520px"
         }}>
           <PlacesMap
-            places={places}
-            onMarkerClick={p => { /* implement navigation or modal if needed */ }}
+            places={places.filter(
+              (p) =>
+                typeof p.latitude === "number" &&
+                typeof p.longitude === "number" &&
+                !isNaN(p.latitude) && !isNaN(p.longitude)
+            )}
+            onMarkerClick={p => navigate(`/places/${p.id}`)}
             height={isMobile ? "340px" : "500px"}
           />
         </div>

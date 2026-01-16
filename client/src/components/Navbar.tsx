@@ -1,63 +1,132 @@
 import { useAuth } from "../context/AuthContext";
 import logo from "/logo.png";
+import { useNavigate } from "react-router-dom";
 
-export default function Navbar({ onLoginClick, onRegisterClick, onMenuClick }: {
+export default function Navbar({
+  onLoginClick,
+  onRegisterClick,
+  onMenuClick,
+}: {
   onLoginClick: () => void,
   onRegisterClick: () => void,
   onMenuClick: () => void
 }) {
   const { token, user, logout } = useAuth();
+  const navigate = useNavigate();
+
   return (
-    <nav style={{ display: "flex", alignItems: "center", gap: 24, margin: "22px 20px", position: "relative" }}>
-      <img
-        src={logo} alt="HBnB logo" width={120} height={40} style={{ marginRight: 26, marginLeft: 4, cursor: "pointer" }}
-        onClick={() => window.location.href = "/"}
-        title="Ir a inicio"
-      />
+    <nav
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "12px 28px",
+        background: "transparent",
+        minHeight: 64,
+      }}
+    >
+      {/* Left: Logo */}
+      <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+        <img
+          src={logo}
+          alt="HBnB logo"
+          height={48}
+          style={{
+            cursor: "pointer",
+            marginRight: 14,
+            marginLeft: 4,
+            objectFit: "contain",
+          }}
+          onClick={() => navigate("/")}
+          title="Go to home"
+        />
+        <button
+          onClick={() => navigate("/")}
+          style={{
+            fontWeight: 600,
+            fontSize: "1rem",
+            padding: "8px 18px",
+            border: "none",
+            background: "transparent",
+            cursor: "pointer",
+            borderRadius: 6,
+          }}
+        >
+          Places
+        </button>
+        <button
+          onClick={() => navigate("/create")}
+          style={{
+            fontWeight: 600,
+            fontSize: "1rem",
+            padding: "8px 18px",
+            border: "none",
+            background: "transparent",
+            cursor: "pointer",
+            borderRadius: 6,
+          }}
+        >
+          Create Place
+        </button>
+      </div>
+      {/* Right: Auth buttons or greeting */}
       <div style={{
-        marginLeft: "auto",
-        display: window.innerWidth < 850 ? "none" : "block"
+        display: "flex",
+        gap: 12,
+        alignItems: "center"
       }}>
         {!token ? (
           <>
-            <button onClick={onLoginClick}>Login</button>
-            <button onClick={onRegisterClick}>Register</button>
+            <button
+              onClick={onLoginClick}
+              style={{
+                fontWeight: 500,
+                fontSize: ".98rem",
+                padding: "8px 18px",
+                border: "1.5px solid #224",
+                background: "white",
+                borderRadius: 7,
+                cursor: "pointer"
+              }}
+            >
+              Login
+            </button>
+            <button
+              onClick={onRegisterClick}
+              style={{
+                fontWeight: 500,
+                fontSize: ".98rem",
+                padding: "8px 18px",
+                border: "1.5px solid #224",
+                background: "white",
+                borderRadius: 7,
+                cursor: "pointer"
+              }}
+            >
+              Register
+            </button>
           </>
         ) : (
           <>
-            <span style={{ marginRight: 12 }}>Hello, {user?.firstName || user?.email}!</span>
-            <button onClick={logout}>Sign out</button>
+            <span style={{ marginRight: 2, color: "#21335c", fontWeight: 500 }}>
+              Hello, {user?.firstName || user?.email}!
+            </span>
+            <button
+              onClick={logout}
+              style={{
+                fontWeight: 600,
+                fontSize: ".98rem",
+                padding: "8px 18px",
+                border: "1.5px solid #224",
+                background: "white",
+                borderRadius: 7,
+                cursor: "pointer"
+              }}
+            >
+              Sign out
+            </button>
           </>
         )}
-      </div>
-      {/* Burger appears only in mobile */}
-      <div style={{
-        position: "absolute",
-        right: 12,
-        top: 11,
-        display: window.innerWidth >= 850 ? "none" : "block"
-      }}>
-        <button
-          onClick={onMenuClick}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            fontSize: 27,
-            cursor: "pointer"
-          }}
-          aria-label="Open menu"
-        >
-          <span style={{
-            display: "block", width: 32, height: 4, background: "#5279c8", borderRadius: "7px", marginBottom: "7px"
-          }}></span>
-          <span style={{
-            display: "block", width: 32, height: 4, background: "#5279c8", borderRadius: "7px", marginBottom: "7px"
-          }}></span>
-          <span style={{
-            display: "block", width: 32, height: 4, background: "#5279c8", borderRadius: "7px"
-          }}></span>
-        </button>
       </div>
     </nav>
   );

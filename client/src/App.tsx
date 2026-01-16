@@ -1,9 +1,9 @@
 import React from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Places from "./pages/Places";
-// Add these imports only if these components exist:
 import CreatePlace from "./pages/CreatePlace";
 import PlaceDetail from "./pages/PlaceDetail";
 import EditPlace from "./pages/EditPlace";
@@ -16,13 +16,11 @@ export default function App() {
 
   return (
     <div>
-      {/* Example nav. Improve as needed. */}
-      <nav style={{ margin: "16px", textAlign: "center" }}>
-        <button onClick={() => navigate("/")}>Places</button>
-        <button onClick={() => navigate("/create")}>Create Place</button>
-        <button onClick={() => navigate("/login")}>Login</button>
-        <button onClick={() => navigate("/register")}>Register</button>
-      </nav>
+      <Navbar
+        onLoginClick={() => navigate("/login")}
+        onRegisterClick={() => navigate("/register")}
+        onMenuClick={() => {}}
+      />
       <Routes>
         <Route path="/" element={<Places />} />
         <Route path="/login" element={<Login onSuccess={() => navigate("/")} />} />
