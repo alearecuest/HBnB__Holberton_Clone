@@ -9,6 +9,11 @@ import SearchBar from "../components/SearchBar";
 export default function Places() {
   const [places, setPlaces] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [filters, setFilters] = useState({
+    location: "",
+    dateRange: { from: "", to: "" },
+    guests: 1
+  });
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
@@ -30,6 +35,18 @@ export default function Places() {
   const isMobile = window.innerWidth < 900;
   const featured = Array.isArray(places) ? places.slice(0, 5) : [];
 
+  // 🟢 Filtro “en vivo”
+  const filteredPlaces = places.filter(place => {
+    const q = filters.location.trim().toLowerCase();
+    const matchLocation = !q ||
+      (place.title && place.title.toLowerCase().includes(q)) ||
+      (place.description && place.description.toLowerCase().includes(q));
+
+    const matchGuests = !place.maxGuests || filters.guests <= place.maxGuests;
+
+    return matchLocation && matchGuests;
+  });
+
   return (
     <div>
       <div style={{
@@ -45,9 +62,9 @@ export default function Places() {
         {t("home.hero")}
       </div>
 
-      <SearchBar onSearch={params => {
-        console.log("Searching!", params);
-      }} />
+      <SearchBar
+        onSearch={params => setFilters(params)}
+      />
 
       <div style={{ maxWidth: 1370, margin: "0 auto" }}>
         <h2 style={{
@@ -77,11 +94,11 @@ export default function Places() {
         <div style={{ flex: 2, minWidth: 350 }}>
           <h2 style={{ marginTop: 0 }}>{t("home.places")}</h2>
           {loading && <div>{t("general.loading", "Loading...")}</div>}
-          {(!places || places.length === 0) && !loading && (
+          {(!filteredPlaces || filteredPlaces.length === 0) && !loading && (
             <div>{t("general.noplaces", "No places yet.")}</div>
           )}
           <div className="cards-grid">
-            {places.map((place) => (
+            {filteredPlaces.map((place) => (
               <div
                 key={place.id}
                 className="place-card"
@@ -130,7 +147,7 @@ export default function Places() {
           height: "520px"
         }}>
           <PlacesMap
-            places={places.filter(
+            places={filteredPlaces.filter(
               (p) =>
                 typeof p.latitude === "number" &&
                 typeof p.longitude === "number" &&

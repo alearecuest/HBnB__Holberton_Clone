@@ -37,7 +37,8 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           borderRadius: 8,
           border: "1.4px solid #b8c0da",
           minWidth: 150,
-          fontSize: "1rem"
+          fontSize: "1rem",
+          height: "44px"
         }}
       />
 
@@ -51,7 +52,8 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           borderRadius: 8,
           border: "1.4px solid #b8c0da",
           minWidth: 110,
-          fontSize: "1rem"
+          fontSize: "1rem",
+          height: "44px"
         }}
       />
 
@@ -65,7 +67,8 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           borderRadius: 8,
           border: "1.4px solid #b8c0da",
           minWidth: 110,
-          fontSize: "1rem"
+          fontSize: "1rem",
+          height: "44px"
         }}
       />
 
@@ -80,24 +83,14 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           borderRadius: 8,
           border: "1.4px solid #b8c0da",
           width: "75px",
-          fontSize: "1rem"
+          fontSize: "1rem",
+          height: "44px"
         }}
         placeholder={t("search.guests", "Guests")}
       />
 
       <button
-        style={{
-          background: "#264ef7",
-          color: "#fff",
-          fontWeight: 700,
-          fontSize: "1rem",
-          border: "none",
-          borderRadius: 10,
-          padding: "10px 26px",
-          cursor: "pointer",
-          marginLeft: 10,
-          boxShadow: "0 3px 13px #aac7",
-        }}
+        className="search-btn"
         onClick={() => onSearch({
           location,
           dateRange: { from, to },

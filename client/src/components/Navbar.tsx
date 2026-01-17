@@ -23,16 +23,12 @@ export default function Navbar({
   ];
 
   return (
-    <nav
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "12px 28px",
-        background: "transparent",
-        minHeight: 64,
-      }}
-    >
+    <nav style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      margin: "24px 36px 18px 36px"
+    }}>
       <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
         <img
           src={logo}
@@ -43,54 +39,34 @@ export default function Navbar({
             marginRight: 12,
             marginLeft: 4,
             objectFit: "contain",
+            display: "block"
           }}
           onClick={() => navigate("/")}
           title="Go to home"
         />
         <button
+          className="navbar-btn"
           onClick={() => navigate("/")}
-          style={{
-            fontWeight: 600,
-            fontSize: "1rem",
-            padding: "8px 18px",
-            border: "none",
-            background: "transparent",
-            cursor: "pointer",
-            borderRadius: 6,
-          }}
         >
           {t("navbar.places")}
         </button>
         <button
+          className="navbar-btn"
           onClick={() => navigate("/create")}
-          style={{
-            fontWeight: 600,
-            fontSize: "1rem",
-            padding: "8px 18px",
-            border: "none",
-            background: "transparent",
-            cursor: "pointer",
-            borderRadius: 6,
-          }}
         >
           {t("navbar.create")}
         </button>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        {/* Idioma (EN/ES) selector */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 13,
+      }}>
         <select
+          className="navbar-lang-select"
           value={i18n.language}
           onChange={e => i18n.changeLanguage(e.target.value)}
-          style={{
-            padding: "6px 10px",
-            borderRadius: 6,
-            border: "1px solid #ccd",
-            background: "#fff",
-            fontWeight: 500,
-            fontSize: ".98rem",
-            cursor: "pointer"
-          }}
           aria-label="Select language"
         >
           {languages.map(lan => (
@@ -100,30 +76,14 @@ export default function Navbar({
         {!token ? (
           <>
             <button
+              className="navbar-btn"
               onClick={onLoginClick}
-              style={{
-                fontWeight: 500,
-                fontSize: ".98rem",
-                padding: "8px 18px",
-                border: "1.5px solid #224",
-                background: "white",
-                borderRadius: 7,
-                cursor: "pointer"
-              }}
             >
               {t("navbar.login")}
             </button>
             <button
+              className="navbar-btn"
               onClick={onRegisterClick}
-              style={{
-                fontWeight: 500,
-                fontSize: ".98rem",
-                padding: "8px 18px",
-                border: "1.5px solid #224",
-                background: "white",
-                borderRadius: 7,
-                cursor: "pointer"
-              }}
             >
               {t("navbar.register")}
             </button>
@@ -134,16 +94,8 @@ export default function Navbar({
               {t("navbar.hello", { name: user?.firstName || user?.email })}
             </span>
             <button
+              className="navbar-btn"
               onClick={logout}
-              style={{
-                fontWeight: 600,
-                fontSize: ".98rem",
-                padding: "8px 18px",
-                border: "1.5px solid #224",
-                background: "white",
-                borderRadius: 7,
-                cursor: "pointer"
-              }}
             >
               {t("navbar.signout")}
             </button>

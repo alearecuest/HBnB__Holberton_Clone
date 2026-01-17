@@ -358,7 +358,7 @@ export default function PlaceDetail() {
         </div>
 
         {/* Dummy calendar */}
-        <DummyCalendar />
+        <PlaceAvailabilityCalendar placeId={place.id} isOwner={!!isOwner} />
 
         <Reviews placeId={place.id} />
         
