@@ -4,6 +4,7 @@
     "featured": "Featured Places",
     "places": "Places"
   },
+
   "navbar": {
     "places": "Places",
     "create": "Create Place",
@@ -12,16 +13,25 @@
     "signout": "Sign out",
     "hello": "Hello, {{name}}!"
   },
+
   "general": {
     "loading": "Loading...",
     "noplaces": "No places yet.",
     "noimage": "No image"
   },
+
   "search": {
     "location": "Where to?",
     "from": "From",
     "to": "To",
     "guests": "Guests",
     "search": "Search"
+  },
+  
+  "places": {
+    "showall": "Show all",
+    "onlyfavs": "Only favorites",
+    "addfav": "Add to favorites",
+    "removefav": "Remove from favorites"
   }
 }

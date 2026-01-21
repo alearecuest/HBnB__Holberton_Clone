@@ -63,16 +63,25 @@ export default function Navbar({
         alignItems: "center",
         gap: 13,
       }}>
-        <select
-          className="navbar-lang-select"
-          value={i18n.language}
-          onChange={e => i18n.changeLanguage(e.target.value)}
-          aria-label="Select language"
+        <button
+          className="navbar-lang-btn"
+          onClick={() => i18n.changeLanguage(i18n.language === "en" ? "es" : "en")}
+          title={i18n.language === "en" ? "Cambiar a Español" : "Change to English"}
         >
-          {languages.map(lan => (
-            <option value={lan.code} key={lan.code}>{lan.label}</option>
-          ))}
-        </select>
+          <span role="img" aria-label="Idioma" style={{fontSize:"1.44em", verticalAlign:"middle"}}>🌐</span>
+          <span style={{
+            fontWeight: 700,
+            fontSize: "0.97em",
+            letterSpacing: ".5px",
+            verticalAlign:"middle",
+            marginLeft:7,
+            marginRight:4,
+            color: "#1550bb"
+          }}>
+            {i18n.language.toUpperCase()}
+          </span>
+        </button>
+
         {!token ? (
           <>
             <button

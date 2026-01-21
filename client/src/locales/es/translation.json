@@ -4,6 +4,7 @@
     "featured": "Lugares destacados",
     "places": "Propiedades"
   },
+  
   "navbar": {
     "places": "Propiedades",
     "create": "Crear propiedad",
@@ -12,16 +13,25 @@
     "signout": "Cerrar sesión",
     "hello": "¡Hola, {{name}}!"
   },
+
 	"general": {
     "loading": "Cargando...",
     "noplaces": "Aún no hay propiedades.",
     "noimage": "Sin imagen"
   },
+
 	"search": {
 		"location": "¿Dónde?",
 		"from": "Desde",
 		"to": "Hasta",
 		"guests": "Huéspedes",
 		"search": "Buscar"
-	}
+	},
+
+  "places": {
+    "showall": "Mostrar todos",
+    "onlyfavs": "Sólo favoritos",
+    "addfav": "Agregar a favoritos",
+    "removefav": "Quitar de favoritos"
+  }
 }

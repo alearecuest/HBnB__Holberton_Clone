@@ -353,6 +353,43 @@ form button[type="submit"]:hover, form button[type="submit"]:focus, form button:
   margin-left: 10px;
 }
 
+.fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2em;
+  outline: none;
+  transition: color 0.18s;
+}
+
+.fav-btn:hover span {
+  color: #ff3b60 !important;
+}
+
+.navbar-lang-btn {
+  background: #fff;
+  border: 2px solid #c0d2fa;
+  border-radius: 9px;
+  width: 60px;
+  height: 43px;
+  padding: 0;
+  font-size: 0.97em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  cursor: pointer;
+  box-shadow: 0 1px 8px #599cf81c;
+  transition: border-color 0.13s;
+}
+
+.navbar-lang-btn:focus,
+.navbar-lang-btn:hover {
+  border-color: #1550bb;
+  background: #ecf7ff;
+}
+
 .navbar-lang-select option {
   text-align: center;
 }
@@ -364,3 +401,63 @@ form button[type="submit"]:hover, form button[type="submit"]:focus, form button:
   border-radius: 40%;
   position: relative;
 }
+
+.react-calendar {
+  background: #fff;
+  border-radius: 12px;
+  font-size: 1.09rem;
+}
+
+.react-calendar__tile--active {
+  background: #2167fd !important;
+  color: #fff !important;
+}
+
+.react-calendar__month-view__weekdays {
+  color: #1b3d6d;
+  font-weight: 700;
+}
+
+.busy-day {
+  background: #ffe2e2 !important;
+  color: #981a1a !important;
+  opacity: 1 !important;
+  border-radius: 50%;
+}
+
+.react-calendar__navigation button {
+  background: none;
+  color: #3650f7;
+  font-weight: bold;
+  font-size: 1.23em;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  transition: background .15s;
+}
+
+.react-calendar__navigation button:enabled:hover, .react-calendar__navigation button:enabled:focus {
+  background: #e6f0fe;
+  color: #1f43bb;
+}
+
+.react-calendar__navigation button[disabled] {
+  opacity: 0.33;
+}
+
+.react-calendar__tile--now {
+  background: #f8fafb !important;
+  color: #3650f7 !important;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.busy-day {
+  background: #fddbdb !important;
+  color: #fd2b2b !important;
+  opacity: 1 !important;
+  border-radius: 50%;
+  border: 2.5px solid #ffd6d6;
+  font-weight: bold;
+}
+

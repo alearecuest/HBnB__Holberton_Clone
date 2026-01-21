@@ -14,6 +14,29 @@ export default function Places() {
     dateRange: { from: "", to: "" },
     guests: 1
   });
+
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("hbnb-favorites") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  function toggleFavorite(placeId: string) {
+    setFavorites(favs => {
+      let newFavs;
+      if (favs.includes(placeId)) {
+        newFavs = favs.filter(id => id !== placeId);
+      } else {
+        newFavs = [...favs, placeId];
+      }
+      localStorage.setItem("hbnb-favorites", JSON.stringify(newFavs));
+      return newFavs;
+    });
+  }
+
+  const [showOnlyFavs, setShowOnlyFavs] = useState(false);
+
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
@@ -35,17 +58,18 @@ export default function Places() {
   const isMobile = window.innerWidth < 900;
   const featured = Array.isArray(places) ? places.slice(0, 5) : [];
 
-  // 🟢 Filtro “en vivo”
   const filteredPlaces = places.filter(place => {
     const q = filters.location.trim().toLowerCase();
     const matchLocation = !q ||
       (place.title && place.title.toLowerCase().includes(q)) ||
       (place.description && place.description.toLowerCase().includes(q));
-
     const matchGuests = !place.maxGuests || filters.guests <= place.maxGuests;
-
     return matchLocation && matchGuests;
   });
+
+  const visiblePlaces = showOnlyFavs
+    ? filteredPlaces.filter(p => favorites.includes(p.id))
+    : filteredPlaces;
 
   return (
     <div>
@@ -93,19 +117,64 @@ export default function Places() {
       }}>
         <div style={{ flex: 2, minWidth: 350 }}>
           <h2 style={{ marginTop: 0 }}>{t("home.places")}</h2>
+          
+          <div style={{ margin: "14px 0 12px", textAlign: "right" }}>
+            <button
+              style={{
+                fontWeight: 600,
+                fontSize: "1em",
+                cursor: "pointer",
+                background: showOnlyFavs ? "#ffe7ee" : "#f7f7fc",
+                color: showOnlyFavs ? "#e23" : "#7a8",
+                border: "1.6px solid #bbdbec",
+                borderRadius: "7px",
+                padding: "7px 16px",
+                marginRight: 20
+              }}
+              onClick={() => setShowOnlyFavs(f => !f)}
+            >
+              {showOnlyFavs ? t("places.showall", "Show all") : t("places.onlyfavs", "Only favorites")}
+            </button>
+          </div>
+
           {loading && <div>{t("general.loading", "Loading...")}</div>}
-          {(!filteredPlaces || filteredPlaces.length === 0) && !loading && (
+          {(!visiblePlaces || visiblePlaces.length === 0) && !loading && (
             <div>{t("general.noplaces", "No places yet.")}</div>
           )}
           <div className="cards-grid">
-            {filteredPlaces.map((place) => (
+            {visiblePlaces.map((place) => (
               <div
                 key={place.id}
                 className="place-card"
                 tabIndex={0}
-                style={{ cursor: "pointer" }}
+                style={{ position: "relative", cursor: "pointer" }}
                 onClick={() => navigate(`/places/${place.id}`)}
               >
+                <button
+                  className="fav-btn"
+                  onClick={e => {
+                    e.stopPropagation();
+                    toggleFavorite(place.id);
+                  }}
+                  title={favorites.includes(place.id) ? t("places.removefav", "Remove from favorites") : t("places.addfav", "Add to favorites")}
+                  style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 12,
+                    zIndex: 3,
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "2.1em"
+                  }}
+                  tabIndex={-1}
+                  aria-label={favorites.includes(place.id) ? "Unfavorite" : "Favorite"}
+                >
+                  {favorites.includes(place.id)
+                    ? <span style={{ color: "#e23" }}>★</span>
+                    : <span style={{ color: "#aaa" }}>☆</span>}
+                </button>
+
                 {place.photos && place.photos.length > 0 && place.photos[0]?.url ? (
                   <img
                     src={`http://localhost:4000${place.photos[0].url}`}

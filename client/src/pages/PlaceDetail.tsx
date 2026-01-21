@@ -4,7 +4,9 @@ import Reviews from "../components/Reviews";
 import PhotoGalleryLightbox from "../components/PhotoGalleryLightbox";
 import BookingCardSidebar from "../components/BookingCardSidebar";
 import PlaceMap from "../components/PlaceMap";
+import PlaceAvailabilityCalendar from "../components/PlaceAvailabilityCalendar";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import { FaWifi, FaTv, FaParking, FaSwimmer } from "react-icons/fa";
 import { MdOutlineAcUnit, MdPets } from "react-icons/md";
 import { GiCookingPot, GiBarbecue } from "react-icons/gi";
@@ -20,49 +22,11 @@ const iconsMap: { [key: string]: JSX.Element } = {
   GiBarbecue: <GiBarbecue style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
 };
 
-function formatPrice(price: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
-}
-
-function DummyCalendar() {
-  const days = Array.from({ length: 35 });
-  return (
-    <div style={{
-      width: "100%",
-      maxWidth: 320,
-      borderRadius: 9,
-      background: "#f8fafb",
-      border: "1.5px solid #d4e8fe",
-      padding: "15px 14px 12px 14px",
-      fontFamily: "inherit",
-      margin: "24px 0 22px 0"
-    }}>
-      <div style={{ marginBottom: 13, fontWeight: 800, fontSize: "1.11rem" }}>Availability calendar (demo)</div>
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(7, 1fr)",
-        gap: "4px"
-      }}>
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => (
-          <div key={d} style={{ textAlign: "center", fontWeight: 700, color: "#6b7699", fontSize: 13 }}>{d}</div>
-        ))}
-        {days.map((_, i) =>
-          <div key={i}
-               style={{
-                 width: "2.15em",
-                 height: "2.15em",
-                 borderRadius: ".58em",
-                 background: (i % 10 === 2) ? "#c9eafe" : "#ecf6fc",
-                 textAlign: "center",
-                 lineHeight: "2.15em",
-                 color: "#2e3c52",
-                 fontWeight: 600,
-                 opacity: (i + 1 < 4 || i > 29) ? 0.19 : 1
-               }}>{i + 1 <= 31 ? i + 1 : ""}</div>
-        )}
-      </div>
-    </div>
-  );
+function formatPrice(price: number, lang: string) {
+  return new Intl.NumberFormat(lang === 'es' ? 'es-UY' : 'en-US', {
+    style: 'currency',
+    currency: lang === 'es' ? 'UYU' : 'USD'
+  }).format(price);
 }
 
 function GalleryGrid({
@@ -76,6 +40,7 @@ function GalleryGrid({
   onDeletePhoto?: (index: number) => void;
   isOwner: boolean;
 }) {
+  const { t } = useTranslation();
   const deleteBtnStyle = {
     position: "absolute",
     top: 8,
@@ -112,7 +77,7 @@ function GalleryGrid({
         letterSpacing: "0.5px"
       }}>
         <span role="img" aria-label="No photo" style={{ fontSize: "3em", marginRight: 15 }}>🏡</span>
-        No photos added yet. Be the first to upload!
+        {t("place.nophotos", "No photos added yet. Be the first to upload!")}
       </div>
     );
   }
@@ -132,7 +97,7 @@ function GalleryGrid({
           <button
             onClick={() => onDeletePhoto(0)}
             style={deleteBtnStyle}
-            title="Delete photo"
+            title={t("place.deletephoto", "Delete photo")}
           >×</button>
         )}
       </div>
@@ -166,7 +131,7 @@ function GalleryGrid({
           <button
             onClick={() => onDeletePhoto(0)}
             style={deleteBtnStyle}
-            title="Delete photo"
+            title={t("place.deletephoto", "Delete photo")}
           >×</button>
         )}
       </div>
@@ -201,9 +166,9 @@ function GalleryGrid({
             />
             {isOwner && onDeletePhoto && (
               <button
-                onClick={() => onDeletePhoto(i+1)}
+                onClick={() => onDeletePhoto(i + 1)}
                 style={deleteBtnStyle}
-                title="Delete photo"
+                title={t("place.deletephoto", "Delete photo")}
               >×</button>
             )}
           </div>
@@ -226,13 +191,14 @@ function GalleryGrid({
             cursor: "pointer",
             zIndex: 2
           }}
-        >Show all photos</button>
+        >{t("place.showallphotos", "Show all photos")}</button>
       )}
     </div>
   );
 }
 
 export default function PlaceDetail() {
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [place, setPlace] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -240,35 +206,52 @@ export default function PlaceDetail() {
 
   const { user, token } = useAuth();
   const navigate = useNavigate();
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
+    setFetchError(null);
     fetch(`http://localhost:4000/api/v1/places/${id}`)
-      .then(res => res.ok ? res.json() : Promise.reject('Not found'))
-      .then(data => setPlace(data))
-      .catch(() => setPlace(null))
+      .then(res => {
+        if (!res.ok) throw new Error('Not found');
+        return res.json();
+      })
+      .then(data => {
+        if (!data) throw new Error('Place data empty!');
+        setPlace(data);
+      })
+      .catch((err) => {
+        setPlace(null);
+        setFetchError(err.message || "Unknown error");
+        console.error('Failed to load place:', err);
+        alert('Error loading place: ' + (err.message || "Unknown error"));
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
   const isOwner = user && place && place.owner && String(user.id) === String(place.owner.id);
 
   async function handleDeletePhoto(idx: number) {
-    if (!window.confirm("Are you sure you want to delete this photo?")) return;
+    if (!window.confirm(t("place.confirmdeletephoto", "Are you sure you want to delete this photo?"))) return;
     const res = await fetch(`http://localhost:4000/api/v1/places/${place.id}/photos/${idx}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
     if (res.ok) {
-      const newPlace = await fetch(`http://localhost:4000/api/v1/places/${place.id}`).then(r=>r.json());
+      const newPlace = await fetch(`http://localhost:4000/api/v1/places/${place.id}`).then(r => r.json());
       setPlace(newPlace);
     } else {
-      alert("Error deleting photo.");
+      alert(t("place.errordeletephoto", "Error deleting photo."));
     }
   }
 
-  if (loading) return <div style={{margin:40, fontSize:"1.5em"}}>Loading...</div>;
-  if (!place) return <div style={{margin:40, fontSize:"1.5em", color:"#a00"}}>Not found</div>;
+  if (loading) return <div style={{ margin: 40, fontSize: "1.5em" }}>{t("general.loading", "Loading...")}</div>;
+  if (fetchError) return <div style={{ margin: 40, color: "#b00", fontWeight: 700, fontSize: "1.2em" }}>
+    {t("general.errorloading", { error: fetchError }, `Error: ${fetchError}`)}
+    <br />Check console/network tab for more info.
+  </div>;
+  if (!place) return <div style={{ margin: 40, fontSize: "1.5em", color: "#a00" }}>{t("general.noplace", "Place not found")}</div>;
 
   return (
     <div
@@ -285,12 +268,12 @@ export default function PlaceDetail() {
       <div>
         <button onClick={() => navigate("/")} style={{
           marginBottom: 18, background: "#eee", border: "none", padding: "8px 16px", borderRadius: 7, cursor: "pointer", fontSize: "1rem"
-        }}>← Back to places</button>
-        
+        }}>{t("place.back", "← Back to places")}</button>
+
         <h2 style={{
           marginTop: 6, fontSize: "2rem", fontWeight: 700, letterSpacing: "-1.5px"
         }}>{place.title}</h2>
-        
+
         {isOwner &&
           <button
             onClick={() => navigate(`/places/${place.id}/edit`)}
@@ -308,7 +291,7 @@ export default function PlaceDetail() {
               marginBottom: 16
             }}
           >
-            Edit publication
+            {t("place.edit", "Edit publication")}
           </button>
         }
 
@@ -328,7 +311,7 @@ export default function PlaceDetail() {
           flexWrap: "wrap",
           gap: 18
         }}>
-          <span style={{ fontWeight: 800, fontSize: "1.17rem", marginRight: 18 }}>Amenities:</span>
+          <span style={{ fontWeight: 800, fontSize: "1.17rem", marginRight: 18 }}>{t("place.amenities", "Amenities:")}</span>
           {place.amenities && place.amenities.length > 0
             ? place.amenities.map((am: any) => (
               <div key={am.id}
@@ -343,38 +326,40 @@ export default function PlaceDetail() {
                   alignItems: "center",
                   boxShadow: "0 2px 6px #acc7fe13"
                 }}>
-                {am.icon && iconsMap[am.icon] ? iconsMap[am.icon] : <FaTv style={{marginRight:6}}/>}
+                {am.icon && iconsMap[am.icon] ? iconsMap[am.icon] : <FaTv style={{ marginRight: 6 }} />}
                 {am.name}
               </div>
             ))
-            : <span style={{ color: "#998" }}>No amenities listed</span>
+            : <span style={{ color: "#998" }}>{t("place.noamenities", "No amenities listed")}</span>
           }
         </div>
 
         <div style={{ color: "#7a7a7a", marginBottom: 13, fontSize: "1.11rem" }}>{place.description}</div>
         <div style={{ fontSize: "1.18rem", margin: "10px 0 9px 0", color: "#2a446e" }}>
-          <b>Price: </b>{formatPrice(place.price)}
-          <span style={{ marginLeft: 18 }}><b>Latitude:</b> {place.latitude}, <b>Longitude:</b> {place.longitude}</span>
+          <b>{t("place.price", "Price:")} </b>
+          {formatPrice(place.price, i18n.language)}
+          <span style={{ marginLeft: 18 }}>
+            <b>{t("place.lat", "Latitude:")}</b> {Number(place.latitude).toFixed(2)}, <b>{t("place.long", "Longitude:")}</b> {Number(place.longitude).toFixed(2)}
+          </span>
         </div>
 
-        {/* Dummy calendar */}
-        <PlaceAvailabilityCalendar placeId={place.id} isOwner={!!isOwner} />
+        <PlaceAvailabilityCalendar placeId={place.id} isOwner={!!isOwner} token={token} i18nLanguage={i18n.language} />
 
-        <Reviews placeId={place.id} />
-        
+        {!isOwner && <Reviews placeId={place.id} />}
+
         {isOwner && (
           <button
             onClick={async () => {
-              if (window.confirm("Are you sure you want to delete this place?")) {
+              if (window.confirm(t("place.confirmdelete", "Are you sure you want to delete this place?"))) {
                 const res = await fetch(`http://localhost:4000/api/v1/places/${place.id}`, {
                   method: "DELETE",
                   headers: { Authorization: `Bearer ${token}` }
                 });
                 if (res.ok) {
-                  alert("Place deleted!");
+                  alert(t("place.deletedsuccess", "Place deleted!"));
                   navigate("/");
                 } else {
-                  alert("Error deleting place.");
+                  alert(t("place.errordelete", "Error deleting place."));
                 }
               }
             }}
@@ -387,7 +372,7 @@ export default function PlaceDetail() {
               fontSize: "1.03em"
             }}
           >
-            Delete place
+            {t("place.delete", "Delete place")}
           </button>
         )}
       </div>
@@ -404,7 +389,7 @@ export default function PlaceDetail() {
           }}>
           <BookingCardSidebar
             price={place.price}
-            onReserve={(data) => alert("Reservation logic soon!\n" + JSON.stringify(data, null, 2))}
+            onReserve={(data) => alert(t("place.reservelogic", "Reservation logic soon!") + "\n" + JSON.stringify(data, null, 2))}
           />
         </div>
         <div className="glass"
@@ -414,12 +399,16 @@ export default function PlaceDetail() {
             marginBottom: "10px",
             boxShadow: "0 6px 22px #acc7fe1f",
             background: "rgba(255,255,255,0.28)",
-            backdropFilter: "blur(14px)"
+            backdropFilter: "blur(14px)",
+            minHeight: 360,
+            minWidth: 440
           }}>
           <PlaceMap
             latitude={place.latitude}
             longitude={place.longitude}
             title={place.title}
+            height="360px"
+            width="440px"
           />
         </div>
       </div>
