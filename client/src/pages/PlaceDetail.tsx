@@ -256,11 +256,11 @@ export default function PlaceDetail() {
   return (
     <div
       style={{
-        maxWidth: 1100,
+        maxWidth: 1200,
         margin: "2rem auto",
         display: "grid",
-        gridTemplateColumns: "1.6fr 0.96fr",
-        gap: "44px",
+        gridTemplateColumns: "1.7fr 1.15fr",
+        gap: "40px",
         fontFamily: "Montserrat, Arial, sans-serif"
       }}
     >
@@ -270,40 +270,39 @@ export default function PlaceDetail() {
           marginBottom: 18, background: "#eee", border: "none", padding: "8px 16px", borderRadius: 7, cursor: "pointer", fontSize: "1rem"
         }}>{t("place.back", "← Back to places")}</button>
 
-        <h2 style={{
-          marginTop: 6, fontSize: "2rem", fontWeight: 700, letterSpacing: "-1.5px"
-        }}>{place.title}</h2>
-
-        {isOwner &&
-          <button
-            onClick={() => navigate(`/places/${place.id}/edit`)}
-            style={{
-              background: "#3650f7",
-              color: "#fff",
-              border: "none",
-              borderRadius: 9,
-              marginLeft: 12,
-              padding: "8px 24px",
-              fontWeight: 700,
-              fontSize: "1.01em",
-              cursor: "pointer",
-              boxShadow: "0 2px 8px #3650f72e",
-              marginBottom: 16
-            }}
-          >
-            {t("place.edit", "Edit publication")}
-          </button>
-        }
-
-        {/* Gallery */}
+        <div className="place-detail-header" style={{ display: "flex", alignItems: "flex-end", gap: 18, marginBottom: 7 }}>
+          <h2 className="place-detail-title"
+              style={{
+                fontSize: "2.23rem",
+                fontWeight: 900,
+                color: "#1a245f",
+                letterSpacing: "-1.7px",
+                margin: 0,
+                padding: 0,
+              }}>
+            {place.title}
+          </h2>
+          {isOwner && (
+            <button
+              className="vibrant-btn"
+              style={{
+                marginLeft: 16,
+                marginBottom: 5,
+                padding: "8px 25px",
+                fontWeight: 800
+              }}
+              onClick={() => navigate(`/places/${place.id}/edit`)}
+            >
+              {t("place.edit", "Edit publication")}
+            </button>
+          )}
+        </div>
         <GalleryGrid
           photos={place.photos || []}
           onShowAll={() => setGalleryOpen(true)}
           onDeletePhoto={isOwner ? handleDeletePhoto : undefined}
           isOwner={!!isOwner}
         />
-
-        {/* Amenities */}
         <div style={{
           margin: "28px 0 22px 0",
           padding: "14px 0 8px 0",
@@ -333,7 +332,6 @@ export default function PlaceDetail() {
             : <span style={{ color: "#998" }}>{t("place.noamenities", "No amenities listed")}</span>
           }
         </div>
-
         <div style={{ color: "#7a7a7a", marginBottom: 13, fontSize: "1.11rem" }}>{place.description}</div>
         <div style={{ fontSize: "1.18rem", margin: "10px 0 9px 0", color: "#2a446e" }}>
           <b>{t("place.price", "Price:")} </b>
@@ -342,11 +340,8 @@ export default function PlaceDetail() {
             <b>{t("place.lat", "Latitude:")}</b> {Number(place.latitude).toFixed(2)}, <b>{t("place.long", "Longitude:")}</b> {Number(place.longitude).toFixed(2)}
           </span>
         </div>
-
         <PlaceAvailabilityCalendar placeId={place.id} isOwner={!!isOwner} token={token} i18nLanguage={i18n.language} />
-
         {!isOwner && <Reviews placeId={place.id} />}
-
         {isOwner && (
           <button
             onClick={async () => {
@@ -380,11 +375,11 @@ export default function PlaceDetail() {
       <div>
         <div className="glass"
           style={{
-            padding: "30px 28px 20px 28px",
-            marginBottom: "44px",
+            padding: "28px 24px 18px 24px",
+            marginBottom: "38px",
             borderRadius: 18,
             boxShadow: "0 6px 22px #acc7fe1f",
-            background: "rgba(255,255,255,0.28)",
+            background: "rgba(255,255,255,0.27)",
             backdropFilter: "blur(14px)"
           }}>
           <BookingCardSidebar
@@ -400,15 +395,19 @@ export default function PlaceDetail() {
             boxShadow: "0 6px 22px #acc7fe1f",
             background: "rgba(255,255,255,0.28)",
             backdropFilter: "blur(14px)",
-            minHeight: 360,
-            minWidth: 440
+            minHeight: 440,
+            minWidth: 470,
+            width: 470,
+            height: 440,
+            maxWidth: "100%",
+            maxHeight: "100%"
           }}>
           <PlaceMap
             latitude={place.latitude}
             longitude={place.longitude}
             title={place.title}
-            height="360px"
-            width="440px"
+            height="410px"
+            width="470px"
           />
         </div>
       </div>

@@ -99,7 +99,12 @@ export default function Navbar({
           </>
         ) : (
           <>
-            <span style={{ color: "#21335c", fontWeight: 500, marginRight: 2 }}>
+            <span className="navbar-username" style={{
+              color: "#21335c",
+              fontWeight: 900,
+              marginRight: 2,
+              fontSize: "1.08em"
+            }}>
               {t("navbar.hello", { name: user?.firstName || user?.email })}
             </span>
             <button

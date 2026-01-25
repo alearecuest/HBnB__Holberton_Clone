@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 
 interface Amenity {
@@ -8,6 +9,7 @@ interface Amenity {
 }
 
 export default function EditPlace({ id, onBack }: { id: string, onBack: () => void }) {
+  const { t } = useTranslation();
   const [place, setPlace] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,10 +47,10 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
         setLoading(false);
       })
       .catch(() => {
-        setError("Failed to fetch place");
+        setError(t("editplace.errorfetch", "Failed to fetch place"));
         setLoading(false);
       });
-  }, [id]);
+  }, [id, t]);
 
   const isOwner = user && place && place.owner && user.id === place.owner.id;
 
@@ -61,7 +63,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
   }
 
   async function handleDeletePhoto(idx: number) {
-    if (!window.confirm("Delete this photo?")) return;
+    if (!window.confirm(t("editplace.deletephoto", "Delete this photo?"))) return;
     const res = await fetch(`http://localhost:4000/api/v1/places/${place.id}/photos/${idx}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
@@ -71,21 +73,21 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
       setPlace(updated);
 
     } else {
-      alert("Error deleting photo.");
+      alert(t("editplace.errordeletephoto", "Error deleting photo."));
     }
   }
 
   async function handleDeletePlace() {
-    if (!window.confirm("Delete this place forever?")) return;
+    if (!window.confirm(t("editplace.deleteplace", "Delete this place forever?"))) return;
     const res = await fetch(`http://localhost:4000/api/v1/places/${place.id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
     if (res.ok) {
-      alert("Place deleted!");
+      alert(t("editplace.deletesuccess", "Place deleted!"));
       onBack();
     } else {
-      alert("Error deleting place.");
+      alert(t("editplace.errordeleteplace", "Error deleting place."));
     }
   }
 
@@ -103,7 +105,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
       const updated = await fetch(`http://localhost:4000/api/v1/places/${place.id}`).then(r => r.json());
       setPlace(updated);
     } else {
-      alert("Could not upload photos.");
+      alert(t("editplace.erroruploadphoto", "Could not upload photos."));
     }
     e.target.value = "";
   }
@@ -117,7 +119,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
       price: parseFloat(`${price}`),
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
-      amenities: selectedAmenities // ¡esto es clave!
+      amenities: selectedAmenities
     };
     const res = await fetch(`http://localhost:4000/api/v1/places/${place.id}`, {
       method: "PATCH",
@@ -129,16 +131,16 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
     });
     setSaving(false);
     if (res.ok) {
-      alert("Saved!");
+      alert(t("editplace.savesuccess", "Saved!"));
       onBack();
       return;
     } else {
-      alert("Could not save changes.");
+      alert(t("editplace.errorsave", "Could not save changes."));
     }
   }
 
-  if (loading) return <div>Loading...</div>;
-  if (!place) return <div>{error || "Not found"}</div>;
+  if (loading) return <div>{t("general.loading", "Loading...")}</div>;
+  if (!place) return <div>{error || t("general.notfound", "Not found")}</div>;
 
   const deleteBtnStyle = {
     position: "absolute",
@@ -161,25 +163,25 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
   };
 
   return (
-    <div style={{
+    <div className="glass" style={{
       maxWidth: 650,
       margin: "2rem auto",
-      background: "#fff",
-      borderRadius: 18,
-      boxShadow: "0 6px 28px #4b7ade18",
       padding: 32,
       fontFamily: "Montserrat, Arial, sans-serif"
     }}>
       <button
         onClick={onBack}
+        className="vibrant-btn"
         style={{
-          marginBottom: 16, background: "#eef1f5", border: "none", padding: "8px 18px", borderRadius: 7, cursor: "pointer", fontSize: "1rem"
+          marginBottom: 16,
+          padding: "8px 18px",
+          fontSize: "1em"
         }}
-      >← Back</button>
-      <h2 style={{ marginTop: 2, fontSize: "1.7rem", fontWeight: 700 }}>Edit publication</h2>
+      >← {t("editplace.back", "Back")}</button>
+      <h2 style={{ marginTop: 2, fontSize: "1.7rem", fontWeight: 700 }}>{t("editplace.title", "Edit publication")}</h2>
       <form onSubmit={handleSave}>
         <label style={{ display: "block", marginBottom: 9, fontWeight: 600 }}>
-          Title:
+          {t("editplace.formtitle", "Title:")}
           <input
             value={title}
             onChange={e => setTitle(e.target.value)}
@@ -188,7 +190,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           />
         </label>
         <label style={{ display: "block", marginBottom: 13, fontWeight: 600 }}>
-          Description:
+          {t("editplace.formdesc", "Description:")}
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
@@ -198,7 +200,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           />
         </label>
         <label style={{ display: "inline-block", marginBottom: 13, fontWeight: 600, marginRight:12 }}>
-          Price:
+          {t("editplace.formprice", "Price:")}
           <input
             type="number"
             value={price}
@@ -210,7 +212,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           />
         </label>
         <label style={{ display: "inline-block", marginRight: 12 }}>
-          Lat:
+          {t("editplace.formlat", "Lat:")}
           <input
             value={latitude}
             onChange={e => setLatitude(e.target.value)}
@@ -219,7 +221,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           />
         </label>
         <label style={{ display: "inline-block" }}>
-          Lon:
+          {t("editplace.formlon", "Lon:")}
           <input
             value={longitude}
             onChange={e => setLongitude(e.target.value)}
@@ -230,9 +232,9 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
         
         {/* Amenities */}
         <div style={{ margin: "20px 0 18px 0" }}>
-          <b style={{ fontSize: "1.08em" }}>Select amenities:</b>
+          <b style={{ fontSize: "1.08em" }}>{t("editplace.formamenities", "Select amenities:")}</b>
           <div style={{ marginTop: 12, marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 13 }}>
-            {amenities.length === 0 && <span style={{ color: "#aaa" }}>No amenities available</span>}
+            {amenities.length === 0 && <span style={{ color: "#aaa" }}>{t("editplace.noamenities", "No amenities available")}</span>}
             {amenities.map(a => (
               <label key={a.id} style={{
                 background: "#f8fbff",
@@ -258,7 +260,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
 
         {/* Photos */}
         <div style={{ margin: "14px 0 20px 0" }}>
-          <b style={{fontSize:"1.07em"}}>Photos:</b>
+          <b style={{fontSize:"1.07em"}}>{t("editplace.formphotos", "Photos:")}</b>
           <div style={{
             marginTop: 10,
             display: "flex", gap: 13, flexWrap: "wrap",
@@ -281,11 +283,11 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
                   <button
                     onClick={() => handleDeletePhoto(idx)}
                     style={deleteBtnStyle}
-                    title="Delete photo"
+                    title={t("editplace.deletephoto", "Delete photo")}
                   >×</button>
                 )}
               </div>
-            )) : <span style={{ color: "#bbb" }}>No photos.</span>}
+            )) : <span style={{ color: "#bbb" }}>{t("editplace.nophotos", "No photos.")}</span>}
             <label style={{
               display: "inline-flex",
               flexDirection: "column",
@@ -308,31 +310,28 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
                 accept="image/*"
                 onChange={handleUploadPhotos}
               />
-              <span style={{ fontSize: "0.45em", color: "#555", fontWeight: 400, marginTop: 4 }}>Add</span>
+              <span style={{ fontSize: "0.45em", color: "#555", fontWeight: 400, marginTop: 4 }}>{t("editplace.addphoto", "Add")}</span>
             </label>
           </div>
         </div>
         <button
           type="submit"
           disabled={saving}
+          className="vibrant-btn"
           style={{
-            background: "linear-gradient(90deg, #3650f7 0%, #6dccff 100%)",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
             padding: "12px 33px",
             fontWeight: 700,
             fontSize: "1.07em",
             marginTop: "29px",
-            cursor: "pointer",
             boxShadow: "0 3px 16px #3650f724"
           }}>
-          {saving ? "Saving..." : "Save changes"}
+          {saving ? t("editplace.saving", "Saving...") : t("editplace.save", "Save changes")}
         </button>
       </form>
       {isOwner && (
         <button
           onClick={handleDeletePlace}
+          className="vibrant-btn"
           style={{
             background: "linear-gradient(90deg, #f43 0%, #e54 100%)",
             color: "#fff",
@@ -343,10 +342,9 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             fontSize: "1em",
             marginTop: "36px",
             marginBottom: "10px",
-            cursor: "pointer",
             boxShadow: "0 3px 16px #fa667526"
           }}>
-          Delete place
+          {t("editplace.delete", "Delete place")}
         </button>
       )}
     </div>

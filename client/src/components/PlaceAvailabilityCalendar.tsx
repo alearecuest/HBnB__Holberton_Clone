@@ -2,12 +2,6 @@ import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 
-function isSameDay(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() &&
-         a.getMonth() === b.getMonth() &&
-         a.getDate() === b.getDate();
-}
-
 function rangeToApi(range: [Date, Date]) {
   const sort = range[0] < range[1] ? range : [range[1], range[0]];
   return {
@@ -141,9 +135,10 @@ export default function PlaceAvailabilityCalendar({
   return (
     <div style={{
       margin: "2.5em 0",
-      minWidth: 370,
-      maxWidth: 470,
-      padding: "14px 18px 11px 18px",
+      minWidth: 425,
+      maxWidth: 540,
+      width: "95%",
+      padding: "16px 18px 14px 18px",
       background: "#fff",
       borderRadius: 18,
       border: "1.5px solid #c9d3e7"
@@ -166,16 +161,39 @@ export default function PlaceAvailabilityCalendar({
         .custom-hbnb-calendar {
           border: none;
           box-shadow: 0 3px 18px #acc7fe17;
-          font-size: 1.13rem;
+          font-size: 1.14rem;
+          width: 100%;
+        }
+        .react-calendar__navigation {
+          margin-bottom: 8px !important;
+        }
+        .react-calendar__navigation button {
+          background: none;
+          color: #3650f7;
+          font-weight: bold;
+          font-size: 1.18em;
+          border-radius: 6px;
+          border: none;
+          outline: none;
+          transition: background .15s;
+        }
+        .react-calendar__navigation button:enabled:hover, .react-calendar__navigation button:enabled:focus {
+          background: #e6f0fe;
+          color: #1f43bb;
+        }
+        .react-calendar__navigation button[disabled] {
+          opacity: 0.33;
         }
         .react-calendar__tile {
           font-weight: 500;
         }
         .busy-day {
-          background: #ffd6d6 !important;
-          color: #a22 !important;
+          background: #ffdede !important;
+          color: #ce1818 !important;
           opacity: 1 !important;
           border-radius: 50%;
+          font-weight: bold;
+          border: 2px solid #fdf0f0;
         }
         .react-calendar__tile--active {
           background: #3650f7 !important;
@@ -183,6 +201,11 @@ export default function PlaceAvailabilityCalendar({
         }
         .react-calendar__month-view__weekdays {
           color: #1550bb;
+          font-weight: 700;
+        }
+        .react-calendar__tile--now {
+          background: #fff8 !important;
+          color: #1887ce !important;
           font-weight: 700;
         }
       `}</style>
