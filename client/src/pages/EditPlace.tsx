@@ -8,8 +8,19 @@ interface Amenity {
   description: string;
 }
 
+const amenityNameMap: Record<string, { es: string, en: string }> = {
+  "Wi-Fi": { es: "Wi-Fi", en: "Wi-Fi" },
+  "TV": { es: "TV", en: "TV" },
+  "Kitchen": { es: "Cocina", en: "Kitchen" },
+  "Air conditioning": { es: "Aire acondicionado", en: "Air conditioning" },
+  "Parking": { es: "Estacionamiento", en: "Parking" },
+  "Pets allowed": { es: "Se permiten mascotas", en: "Pets allowed" },
+  "Pool": { es: "Piscina", en: "Pool" },
+  "Barbecue": { es: "Parrillero", en: "Barbecue" }
+};
+
 export default function EditPlace({ id, onBack }: { id: string, onBack: () => void }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [place, setPlace] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +43,6 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
       .then(data => setAmenities(data));
   }, []);
 
-  // Load place data
   useEffect(() => {
     fetch(`http://localhost:4000/api/v1/places/${id}`)
       .then(res => res.json())
@@ -71,7 +81,6 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
     if (res.ok) {
       const updated = await fetch(`http://localhost:4000/api/v1/places/${place.id}`).then(r => r.json());
       setPlace(updated);
-
     } else {
       alert(t("editplace.errordeletephoto", "Error deleting photo."));
     }
@@ -164,9 +173,9 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
 
   return (
     <div className="glass" style={{
-      maxWidth: 650,
+      maxWidth: 670,
       margin: "2rem auto",
-      padding: 32,
+      padding: 36,
       fontFamily: "Montserrat, Arial, sans-serif"
     }}>
       <button
@@ -178,13 +187,14 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           fontSize: "1em"
         }}
       >← {t("editplace.back", "Back")}</button>
-      <h2 style={{ marginTop: 2, fontSize: "1.7rem", fontWeight: 700 }}>{t("editplace.title", "Edit publication")}</h2>
+      <h2 style={{ marginTop: 2, fontSize: "1.7rem", fontWeight: 800 }}>{t("editplace.title", "Edit publication")}</h2>
       <form onSubmit={handleSave}>
         <label style={{ display: "block", marginBottom: 9, fontWeight: 600 }}>
           {t("editplace.formtitle", "Title:")}
           <input
             value={title}
             onChange={e => setTitle(e.target.value)}
+            placeholder={t("form.titleph", "e.g. Cozy Loft Downtown")}
             style={{ width: "100%", marginTop: 4, marginBottom: 13, padding: 8, borderRadius: 7, border: "1px solid #d9e2ee" }}
             required
           />
@@ -194,6 +204,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
+            placeholder={t("form.descriptionph", "e.g. 2 bedrooms, kitchen, bathroom")}
             style={{ width: "100%", marginTop: 4, padding: 8, borderRadius: 7, border: "1px solid #d9e2ee" }}
             rows={3}
             required
@@ -207,6 +218,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             min={0}
             step={0.01}
             onChange={e => setPrice(e.target.value)}
+            placeholder={t("form.priceph", "e.g. U$S 50 per day")}
             style={{ width: 110, marginLeft: 8, padding: 6, borderRadius: 7, border: "1px solid #d9e2ee" }}
             required
           />
@@ -216,6 +228,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           <input
             value={latitude}
             onChange={e => setLatitude(e.target.value)}
+            placeholder={t("form.latitudeph", "e.g. -34.6037")}
             style={{ width: 90, marginLeft: 6, padding: 6, borderRadius: 7, border: "1px solid #d9e2ee" }}
             required
           />
@@ -225,14 +238,15 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           <input
             value={longitude}
             onChange={e => setLongitude(e.target.value)}
+            placeholder={t("form.longitudeph", "e.g. -58.3816")}
             style={{ width: 90, marginLeft: 6, padding: 6, borderRadius: 7, border: "1px solid #d9e2ee" }}
             required
           />
         </label>
-        
+
         {/* Amenities */}
-        <div style={{ margin: "20px 0 18px 0" }}>
-          <b style={{ fontSize: "1.08em" }}>{t("editplace.formamenities", "Select amenities:")}</b>
+        <div style={{ margin: "20px 0 18px 0", width:"100%" }}>
+          <b style={{ fontSize: "1.11em" }}>{t("editplace.formamenities", "Select amenities:")}</b>
           <div style={{ marginTop: 12, marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 13 }}>
             {amenities.length === 0 && <span style={{ color: "#aaa" }}>{t("editplace.noamenities", "No amenities available")}</span>}
             {amenities.map(a => (
@@ -242,8 +256,10 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
                 borderRadius: 8,
                 padding: "6px 12px",
                 fontWeight: 600,
-                fontSize: 14,
-                cursor: "pointer"
+                fontSize: 15,
+                cursor: "pointer",
+                minWidth: 110,
+                marginBottom: 5
               }}>
                 <input
                   type="checkbox"
@@ -252,7 +268,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
                   onChange={() => handleAmenityChange(a.id)}
                   style={{ marginRight: 7 }}
                 />
-                {a.name}
+                {amenityNameMap[a.name] ? amenityNameMap[a.name][i18n.language] : a.name}
               </label>
             ))}
           </div>
@@ -276,7 +292,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
                 overflow: "hidden",
                 background: "#fff"
               }}>
-                <img src={`http://localhost:4000${photo.url}`} alt="foto"
+                <img src={`http://localhost:4000${photo.url}`} alt={t("editplace.photopreview", "Photo")}
                   style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }}
                 />
                 {isOwner && (

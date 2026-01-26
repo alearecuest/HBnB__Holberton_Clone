@@ -11,6 +11,17 @@ import { FaWifi, FaTv, FaParking, FaSwimmer } from "react-icons/fa";
 import { MdOutlineAcUnit, MdPets } from "react-icons/md";
 import { GiCookingPot, GiBarbecue } from "react-icons/gi";
 
+const amenityNameMap: Record<string, { es: string; en: string }> = {
+  "Wi-Fi": { es: "Wi-Fi", en: "Wi-Fi" },
+  "TV": { es: "TV", en: "TV" },
+  "Kitchen": { es: "Cocina", en: "Kitchen" },
+  "Air conditioning": { es: "Aire acondicionado", en: "Air conditioning" },
+  "Parking": { es: "Estacionamiento", en: "Parking" },
+  "Pets allowed": { es: "Se permiten mascotas", en: "Pets allowed" },
+  "Pool": { es: "Piscina", en: "Pool" },
+  "Barbecue": { es: "Parrillero", en: "Barbecue" }
+};
+
 const iconsMap: { [key: string]: JSX.Element } = {
   FaWifi: <FaWifi style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
   FaTv: <FaTv style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
@@ -261,14 +272,31 @@ export default function PlaceDetail() {
         display: "grid",
         gridTemplateColumns: "1.7fr 1.15fr",
         gap: "40px",
-        fontFamily: "Montserrat, Arial, sans-serif"
+        fontFamily: "Montserrat, Arial, sans-serif",
+        gridTemplateRows: "auto",
       }}
+      className={window.innerWidth < 600 ? "mobile-place-detail" : ""}
     >
       {/* LEFT COLUMN */}
       <div>
-        <button onClick={() => navigate("/")} style={{
-          marginBottom: 18, background: "#eee", border: "none", padding: "8px 16px", borderRadius: 7, cursor: "pointer", fontSize: "1rem"
-        }}>{t("place.back", "← Back to places")}</button>
+        <button
+          onClick={() => navigate("/")}
+          style={{
+            marginBottom: 18,
+            background: "#eee",
+            border: "none",
+            padding: "8px 16px",
+            borderRadius: 7,
+            cursor: "pointer",
+            fontSize: "1rem",
+            fontWeight: 700,
+          }}
+        >
+          {/* Español-inglés */}
+          {i18n.language === "es"
+            ? "← Volver a las propiedades"
+            : t("place.back", "← Back to places")}
+        </button>
 
         <div className="place-detail-header" style={{ display: "flex", alignItems: "flex-end", gap: 18, marginBottom: 7 }}>
           <h2 className="place-detail-title"
@@ -289,14 +317,15 @@ export default function PlaceDetail() {
                 marginLeft: 16,
                 marginBottom: 5,
                 padding: "8px 25px",
-                fontWeight: 800
+                fontWeight: 800,
               }}
               onClick={() => navigate(`/places/${place.id}/edit`)}
             >
-              {t("place.edit", "Edit publication")}
+              {i18n.language === "es" ? "Editar publicación" : t("place.edit", "Edit publication")}
             </button>
           )}
         </div>
+
         <GalleryGrid
           photos={place.photos || []}
           onShowAll={() => setGalleryOpen(true)}
@@ -308,36 +337,49 @@ export default function PlaceDetail() {
           padding: "14px 0 8px 0",
           display: "flex",
           flexWrap: "wrap",
-          gap: 18
+          gap: 18,
         }}>
-          <span style={{ fontWeight: 800, fontSize: "1.17rem", marginRight: 18 }}>{t("place.amenities", "Amenities:")}</span>
+          <span style={{ fontWeight: 800, fontSize: "1.17rem", marginRight: 18 }}>
+            {i18n.language === "es"
+              ? "Amenidades:"
+              : t("place.amenities", "Amenities:")}
+          </span>
           {place.amenities && place.amenities.length > 0
             ? place.amenities.map((am: any) => (
-              <div key={am.id}
-                style={{
-                  background: "#f9fbfe",
-                  borderRadius: 9,
-                  padding: "6px 12px",
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: "#274e88",
-                  display: "flex",
-                  alignItems: "center",
-                  boxShadow: "0 2px 6px #acc7fe13"
-                }}>
-                {am.icon && iconsMap[am.icon] ? iconsMap[am.icon] : <FaTv style={{ marginRight: 6 }} />}
-                {am.name}
-              </div>
-            ))
-            : <span style={{ color: "#998" }}>{t("place.noamenities", "No amenities listed")}</span>
+                <div key={am.id}
+                  style={{
+                    background: "#f9fbfe",
+                    borderRadius: 9,
+                    padding: "6px 12px",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: "#274e88",
+                    display: "flex",
+                    alignItems: "center",
+                    boxShadow: "0 2px 6px #acc7fe13"
+                  }}>
+                  {am.icon && iconsMap[am.icon] ? iconsMap[am.icon] : <FaTv style={{ marginRight: 6 }} />}
+                  {amenityNameMap[am.name]
+                    ? amenityNameMap[am.name][i18n.language]
+                    : am.name}
+                </div>
+              ))
+            : <span style={{ color: "#998" }}>
+              {i18n.language === "es"
+                ? "Ninguna amenidad listada"
+                : t("place.noamenities", "No amenities listed")}
+            </span>
           }
         </div>
-        <div style={{ color: "#7a7a7a", marginBottom: 13, fontSize: "1.11rem" }}>{place.description}</div>
+        <div style={{ color: "#7a7a7a", marginBottom: 13, fontSize: "1.11rem" }}>
+          {place.description}
+        </div>
         <div style={{ fontSize: "1.18rem", margin: "10px 0 9px 0", color: "#2a446e" }}>
-          <b>{t("place.price", "Price:")} </b>
+          <b>{i18n.language === "es" ? "Precio:" : t("place.price", "Price:")} </b>
           {formatPrice(place.price, i18n.language)}
           <span style={{ marginLeft: 18 }}>
-            <b>{t("place.lat", "Latitude:")}</b> {Number(place.latitude).toFixed(2)}, <b>{t("place.long", "Longitude:")}</b> {Number(place.longitude).toFixed(2)}
+            <b>{i18n.language === "es" ? "Latitud:" : t("place.lat", "Latitude:")}</b> {Number(place.latitude).toFixed(2)},
+            <b>{i18n.language === "es" ? " Longitud:" : t("place.long", "Longitude:")}</b> {Number(place.longitude).toFixed(2)}
           </span>
         </div>
         <PlaceAvailabilityCalendar placeId={place.id} isOwner={!!isOwner} token={token} i18nLanguage={i18n.language} />
@@ -345,16 +387,33 @@ export default function PlaceDetail() {
         {isOwner && (
           <button
             onClick={async () => {
-              if (window.confirm(t("place.confirmdelete", "Are you sure you want to delete this place?"))) {
-                const res = await fetch(`http://localhost:4000/api/v1/places/${place.id}`, {
-                  method: "DELETE",
-                  headers: { Authorization: `Bearer ${token}` }
-                });
+              if (
+                window.confirm(
+                  i18n.language === "es"
+                    ? "¿Seguro que deseas eliminar esta propiedad?"
+                    : t("place.confirmdelete", "Are you sure you want to delete this place?")
+                )
+              ) {
+                const res = await fetch(
+                  `http://localhost:4000/api/v1/places/${place.id}`,
+                  {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${token}` },
+                  }
+                );
                 if (res.ok) {
-                  alert(t("place.deletedsuccess", "Place deleted!"));
+                  alert(
+                    i18n.language === "es"
+                      ? "Propiedad eliminada!"
+                      : t("place.deletedsuccess", "Place deleted!")
+                  );
                   navigate("/");
                 } else {
-                  alert(t("place.errordelete", "Error deleting place."));
+                  alert(
+                    i18n.language === "es"
+                      ? "Error eliminando propiedad."
+                      : t("place.errordelete", "Error deleting place.")
+                  );
                 }
               }
             }}
@@ -364,15 +423,20 @@ export default function PlaceDetail() {
               padding: "13px 34px",
               borderRadius: "10px",
               fontWeight: 700,
-              fontSize: "1.03em"
+              fontSize: "1.03em",
             }}
           >
-            {t("place.delete", "Delete place")}
+            {i18n.language === "es" ? "Eliminar propiedad" : t("place.delete", "Delete place")}
           </button>
         )}
       </div>
+
       {/* RIGHT COLUMN (SIDEBAR) */}
-      <div>
+      <div style={{
+        width: window.innerWidth < 700 ? "100vw" : "",
+        minWidth: window.innerWidth < 700 ? "100vw" : "",
+        maxWidth: window.innerWidth < 700 ? "100vw" : "",
+      }}>
         <div className="glass"
           style={{
             padding: "28px 24px 18px 24px",
@@ -380,11 +444,21 @@ export default function PlaceDetail() {
             borderRadius: 18,
             boxShadow: "0 6px 22px #acc7fe1f",
             background: "rgba(255,255,255,0.27)",
-            backdropFilter: "blur(14px)"
+            backdropFilter: "blur(14px)",
+            width: window.innerWidth < 700 ? "100vw" : "",
+            maxWidth: window.innerWidth < 700 ? "100vw" : "",
           }}>
           <BookingCardSidebar
             price={place.price}
-            onReserve={(data) => alert(t("place.reservelogic", "Reservation logic soon!") + "\n" + JSON.stringify(data, null, 2))}
+            onReserve={(data) =>
+              alert(
+                i18n.language === "es"
+                  ? "Pronto podrás reservar.\n" + JSON.stringify(data, null, 2)
+                  : t("place.reservelogic", "Reservation logic soon!") +
+                      "\n" +
+                      JSON.stringify(data, null, 2)
+              )
+            }
           />
         </div>
         <div className="glass"
@@ -395,19 +469,19 @@ export default function PlaceDetail() {
             boxShadow: "0 6px 22px #acc7fe1f",
             background: "rgba(255,255,255,0.28)",
             backdropFilter: "blur(14px)",
-            minHeight: 440,
-            minWidth: 470,
-            width: 470,
-            height: 440,
-            maxWidth: "100%",
-            maxHeight: "100%"
+            minHeight: window.innerWidth < 700 ? "320px" : "440px",
+            minWidth: window.innerWidth < 700 ? "100vw" : "470px",
+            width: window.innerWidth < 700 ? "100vw" : "470px",
+            height: window.innerWidth < 700 ? "320px" : "440px",
+            maxWidth: window.innerWidth < 700 ? "100vw" : "100%",
+            maxHeight: "100%",
           }}>
           <PlaceMap
             latitude={place.latitude}
             longitude={place.longitude}
             title={place.title}
-            height="410px"
-            width="470px"
+            height={window.innerWidth < 700 ? "320px" : "410px"}
+            width={window.innerWidth < 700 ? "100vw" : "470px"}
           />
         </div>
       </div>

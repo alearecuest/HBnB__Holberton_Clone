@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function BookingCardSidebar({
   price,
@@ -7,9 +8,27 @@ export default function BookingCardSidebar({
   price: number;
   onReserve: (details: { dates: any; guests: number }) => void;
 }) {
+  const { t, i18n } = useTranslation();
   const [guests, setGuests] = useState(1);
   const [dateIn, setDateIn] = useState("");
   const [dateOut, setDateOut] = useState("");
+
+  const showPrice = price ? `$${price} USD` : "--";
+
+  const labelCheckIn = i18n.language === "es" ? "Entrada" : t("booking.checkin", "Check in");
+  const labelCheckOut = i18n.language === "es" ? "Salida" : t("booking.checkout", "Check out");
+  const labelGuests = i18n.language === "es" ? "Huéspedes" : t("booking.guests", "Guests");
+  const btnReserve = i18n.language === "es" ? "Reservar" : t("booking.reserve", "Reserve");
+  const labelNoPay = i18n.language === "es"
+    ? "No se te cobrará aún"
+    : t("booking.nopay", "You won't be charged yet");
+
+  const phCheckIn = i18n.language === "es"
+    ? "dd/mm/aaaa"
+    : t("booking.checkin_placeholder", "dd/mm/yyyy");
+  const phCheckOut = i18n.language === "es"
+    ? "dd/mm/aaaa"
+    : t("booking.checkout_placeholder", "dd/mm/yyyy");
 
   return (
     <div style={{
@@ -28,7 +47,10 @@ export default function BookingCardSidebar({
         marginBottom: 17,
         textAlign: "center"
       }}>
-        {price ? `$${price} USD` : "--"} <span style={{fontWeight:400, fontSize:"0.98em", color:"#887"}}>/ night</span>
+        {showPrice}
+        <span style={{ fontWeight: 400, fontSize: "0.98em", color: "#887" }}>
+          / {i18n.language === "es" ? "noche" : t("booking.night", "night")}
+        </span>
       </div>
       <form style={{
         display: "flex",
@@ -37,11 +59,12 @@ export default function BookingCardSidebar({
         width: "100%"
       }}>
         <label style={{ width: "100%", fontWeight: 600, marginBottom: 5, textAlign: "center" }}>
-          Check in
+          {labelCheckIn}
           <input
             type="date"
             value={dateIn}
             onChange={e => setDateIn(e.target.value)}
+            placeholder={phCheckIn}
             style={{
               margin: "7px auto 11px auto",
               padding: 8,
@@ -54,11 +77,12 @@ export default function BookingCardSidebar({
           />
         </label>
         <label style={{ width: "100%", fontWeight: 600, marginBottom: 5, textAlign: "center" }}>
-          Check out
+          {labelCheckOut}
           <input
             type="date"
             value={dateOut}
             onChange={e => setDateOut(e.target.value)}
+            placeholder={phCheckOut}
             style={{
               margin: "7px auto 11px auto",
               padding: 8,
@@ -71,7 +95,7 @@ export default function BookingCardSidebar({
           />
         </label>
         <label style={{ width: "100%", fontWeight: 600, marginBottom: 14, textAlign: "center" }}>
-          Guests
+          {labelGuests}
           <input
             type="number"
             min={1}
@@ -100,13 +124,18 @@ export default function BookingCardSidebar({
             marginBottom: 7,
             fontSize: "1.12em",
             margin: "12px auto 0 auto",
-            fontWeight: 900
+            fontWeight: 900,
+            height: "44px"
           }}
           disabled={!dateIn || !dateOut}
-        >Reserve</button>
+        >
+          {btnReserve}
+        </button>
       </form>
-      <div style={{textAlign:"center", marginTop:12, width:'100%'}}>
-        <span style={{fontSize:".97em", color:"#788", width:'100%', display:'block'}}>You won't be charged yet</span>
+      <div style={{ textAlign: "center", marginTop: 12, width: "100%" }}>
+        <span style={{ fontSize: ".97em", color: "#788", width: "100%", display: "block" }}>
+          {labelNoPay}
+        </span>
       </div>
     </div>
   );

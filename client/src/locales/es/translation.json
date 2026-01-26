@@ -33,5 +33,41 @@
     "onlyfavs": "Sólo favoritos",
     "addfav": "Agregar a favoritos",
     "removefav": "Quitar de favoritos"
+  },
+
+  "booking": {
+    "reserve": "Reservar",
+    "checkin": "Entrada",
+    "checkin_placeholder": "dd/mm/aaaa",
+    "checkout": "Salida",
+    "checkout_placeholder": "dd/mm/aaaa",
+    "guests": "Huéspedes",
+    "nopay": "No se te cobrará aún"
+  },
+
+  "createplace": {
+    "title": "Crear propiedad",
+    "submit": "Crear propiedad"
+  },
+
+  "editplace": {
+    "title": "Editar publicación",
+    "save": "Guardar cambios",
+    "formtitle": "Título:",
+    "formdesc": "Descripción:",
+    "formprice": "Precio:",
+    "formlat": "Latitud:",
+    "formlon": "Longitud:",
+    "formamenities": "Amenidades:",
+    "formphotos": "Fotos:"
+  },
+  
+  "form": {
+    "title": "Título",
+    "description": "Descripción",
+    "price": "Precio",
+    "latitude": "Latitud",
+    "longitude": "Longitud",
+    "amenities": "Amenidades"
   }
 }
