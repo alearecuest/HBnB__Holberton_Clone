@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface Amenity {
   id: string;
@@ -36,6 +37,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
   const { user, token } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`http://localhost:4000/api/v1/amenities`)
@@ -171,26 +173,44 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
     padding: 0
   };
 
+  const outerBoxStyles: React.CSSProperties = {
+    maxWidth: "1000px",
+    minWidth: 320,
+    width: "96vw",
+    margin: "38px auto",
+    background: "rgba(255,255,255,0.33)",
+    borderRadius: 24,
+    boxShadow: "0 8px 38px #90ccff24, 0 2px 18px #86bafd23",
+    padding: "54px 50px 44px 50px",
+    fontFamily: "Montserrat, Arial, sans-serif",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  };
+
   return (
-    <div className="glass" style={{
-      maxWidth: 670,
-      margin: "2rem auto",
-      padding: 36,
-      fontFamily: "Montserrat, Arial, sans-serif"
-    }}>
+    <div className="glass" style={outerBoxStyles}>
       <button
-        onClick={onBack}
+        onClick={onBack ? onBack : () => navigate("/")}
         className="vibrant-btn"
         style={{
           marginBottom: 16,
           padding: "8px 18px",
-          fontSize: "1em"
+          fontSize: "1em",
         }}
-      >← {t("editplace.back", "Back")}</button>
-      <h2 style={{ marginTop: 2, fontSize: "1.7rem", fontWeight: 800 }}>{t("editplace.title", "Edit publication")}</h2>
-      <form onSubmit={handleSave}>
+      >
+        ← {i18n.language === "es" ? "Volver" : t("editplace.back", "Back")}
+      </button>
+      <h2 style={{ marginTop: 2, fontSize: "1.7rem", fontWeight: 800 }}>
+        {i18n.language === "es"
+          ? "Editar publicación"
+          : t("editplace.title", "Edit publication")}
+      </h2>
+      <form onSubmit={handleSave} style={{width:"100%"}}>
         <label style={{ display: "block", marginBottom: 9, fontWeight: 600 }}>
-          {t("editplace.formtitle", "Title:")}
+          {i18n.language === "es"
+            ? "Título:"
+            : t("editplace.formtitle", "Title:")}
           <input
             value={title}
             onChange={e => setTitle(e.target.value)}
@@ -200,7 +220,9 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           />
         </label>
         <label style={{ display: "block", marginBottom: 13, fontWeight: 600 }}>
-          {t("editplace.formdesc", "Description:")}
+          {i18n.language === "es"
+            ? "Descripción:"
+            : t("editplace.formdesc", "Description:")}
           <textarea
             value={description}
             onChange={e => setDescription(e.target.value)}
@@ -211,7 +233,9 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           />
         </label>
         <label style={{ display: "inline-block", marginBottom: 13, fontWeight: 600, marginRight:12 }}>
-          {t("editplace.formprice", "Price:")}
+          {i18n.language === "es"
+            ? "Precio:"
+            : t("editplace.formprice", "Price:")}
           <input
             type="number"
             value={price}
@@ -224,7 +248,9 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           />
         </label>
         <label style={{ display: "inline-block", marginRight: 12 }}>
-          {t("editplace.formlat", "Lat:")}
+          {i18n.language === "es"
+            ? "Latitud:"
+            : t("editplace.formlat", "Lat:")}
           <input
             value={latitude}
             onChange={e => setLatitude(e.target.value)}
@@ -234,7 +260,9 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           />
         </label>
         <label style={{ display: "inline-block" }}>
-          {t("editplace.formlon", "Lon:")}
+          {i18n.language === "es"
+            ? "Longitud:"
+            : t("editplace.formlon", "Lon:")}
           <input
             value={longitude}
             onChange={e => setLongitude(e.target.value)}
@@ -245,9 +273,19 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
         </label>
 
         {/* Amenities */}
-        <div style={{ margin: "20px 0 18px 0", width:"100%" }}>
-          <b style={{ fontSize: "1.11em" }}>{t("editplace.formamenities", "Select amenities:")}</b>
-          <div style={{ marginTop: 12, marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 13 }}>
+        <div style={{ margin: "20px 0 18px 0", width: "100%" }}>
+          <b style={{ fontSize: "1.11em" }}>
+            {i18n.language === "es"
+              ? "Amenidades:"
+              : t("editplace.formamenities", "Select amenities:")}
+          </b>
+          <div style={{
+            marginTop: 12,
+            marginBottom: 8,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 13,
+          }}>
             {amenities.length === 0 && <span style={{ color: "#aaa" }}>{t("editplace.noamenities", "No amenities available")}</span>}
             {amenities.map(a => (
               <label key={a.id} style={{
@@ -268,7 +306,9 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
                   onChange={() => handleAmenityChange(a.id)}
                   style={{ marginRight: 7 }}
                 />
-                {amenityNameMap[a.name] ? amenityNameMap[a.name][i18n.language] : a.name}
+                {amenityNameMap[a.name]
+                  ? amenityNameMap[a.name][i18n.language]
+                  : a.name}
               </label>
             ))}
           </div>
@@ -276,7 +316,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
 
         {/* Photos */}
         <div style={{ margin: "14px 0 20px 0" }}>
-          <b style={{fontSize:"1.07em"}}>{t("editplace.formphotos", "Photos:")}</b>
+          <b style={{ fontSize: "1.07em" }}>{i18n.language === "es" ? "Fotos:" : t("editplace.formphotos", "Photos:")}</b>
           <div style={{
             marginTop: 10,
             display: "flex", gap: 13, flexWrap: "wrap",
@@ -326,7 +366,9 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
                 accept="image/*"
                 onChange={handleUploadPhotos}
               />
-              <span style={{ fontSize: "0.45em", color: "#555", fontWeight: 400, marginTop: 4 }}>{t("editplace.addphoto", "Add")}</span>
+              <span style={{ fontSize: "0.45em", color: "#555", fontWeight: 400, marginTop: 4 }}>
+                {i18n.language === "es" ? "Agregar" : t("editplace.addphoto", "Add")}
+              </span>
             </label>
           </div>
         </div>
@@ -335,13 +377,17 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
           disabled={saving}
           className="vibrant-btn"
           style={{
-            padding: "12px 33px",
+            padding: "14px 56px",
             fontWeight: 700,
-            fontSize: "1.07em",
+            fontSize: "1.17em",
             marginTop: "29px",
-            boxShadow: "0 3px 16px #3650f724"
+            boxShadow: "0 3px 16px #3650f724",
+            alignSelf: "center"
           }}>
-          {saving ? t("editplace.saving", "Saving...") : t("editplace.save", "Save changes")}
+          {saving
+            ? (i18n.language === "es" ? "Guardando..." : t("editplace.saving", "Saving..."))
+            : (i18n.language === "es" ? "Guardar cambios" : t("editplace.save", "Save changes"))
+          }
         </button>
       </form>
       {isOwner && (
@@ -358,9 +404,10 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             fontSize: "1em",
             marginTop: "36px",
             marginBottom: "10px",
-            boxShadow: "0 3px 16px #fa667526"
+            boxShadow: "0 3px 16px #fa667526",
+            alignSelf: "center"
           }}>
-          {t("editplace.delete", "Delete place")}
+          {i18n.language === "es" ? "Eliminar propiedad" : t("editplace.delete", "Delete place")}
         </button>
       )}
     </div>

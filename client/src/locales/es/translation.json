@@ -47,7 +47,8 @@
 
   "createplace": {
     "title": "Crear propiedad",
-    "submit": "Crear propiedad"
+    "submit": "Crear propiedad",
+    "createbtn": "Crear propiedad"
   },
 
   "editplace": {

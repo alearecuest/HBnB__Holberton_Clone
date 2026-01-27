@@ -121,20 +121,22 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
     setSubmitting(false);
   }
 
+  const outerBoxStyles: React.CSSProperties = {
+    maxWidth: "1000px",
+    minWidth: 320,
+    width: "96vw",
+    margin: "38px auto",
+    background: "rgba(255,255,255,0.33)",
+    borderRadius: 24,
+    boxShadow: "0 8px 38px #90ccff24, 0 2px 18px #86bafd23",
+    padding: "58px 54px 46px 54px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  };
+
   return (
-    <form onSubmit={handleSubmit} style={{
-      maxWidth: 640,
-      minWidth: 340,
-      width: "99vw",
-      margin: "38px auto",
-      background: "rgba(255,255,255,0.33)",
-      borderRadius: 24,
-      boxShadow: "0 8px 38px #90ccff24, 0 2px 18px #86bafd23",
-      padding: "46px 42px 36px 42px",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center"
-    }}>
+    <form onSubmit={handleSubmit} style={outerBoxStyles}>
       <h2>{t("createplace.title", "Create place")}</h2>
       <label htmlFor="title" style={{ fontWeight: 500 }}>{t("form.title", "Title")}</label>
       <input id="title" name="title" placeholder={t("form.titleph", "e.g. Cozy Loft Downtown")} value={form.title} onChange={handleChange} required />
@@ -263,8 +265,20 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
           )
         }
       </div>
-      <button type="submit" disabled={submitting} style={{minWidth:160, fontWeight:800, fontSize:"1.06em"}}>
-        {submitting ? t("createplace.creating", "Creating...") : t("createplace.createbtn", "Create place")}
+      <button
+        type="submit"
+        disabled={submitting}
+        style={{
+          minWidth: 200,
+          fontWeight: 800,
+          fontSize: "1.18em",
+          marginTop: "20px",
+          alignSelf: "center"
+        }}
+      >
+        {submitting
+          ? t("createplace.creating", "Creating...")
+          : t("createplace.submit", "Crear propiedad")}
       </button>
       {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
     </form>
