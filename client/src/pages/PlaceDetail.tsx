@@ -73,7 +73,28 @@ function GalleryGrid({
     padding: 0
   };
 
-  if (!photos || photos.length === 0)
+  if (!photos || photos.length === 0) {
+    return (
+      <div style={{
+        padding: 32,
+        background: "#f1f4fa",
+        borderRadius: 18,
+        minHeight: 180,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: "0 4px 18px #0002",
+        fontWeight: 600,
+        color: "#667",
+        letterSpacing: "0.5px"
+      }}>
+        <span role="img" aria-label="No photo" style={{ fontSize: "3em", marginRight: 15 }}>🏡</span>
+        {t("place.nophotos", "No photos added yet. Be the first to upload!")}
+      </div>
+    );
+  }
+
+  const isMobile = window.innerWidth < 700;
 
   if (photos.length === 1) {
     return (
@@ -81,11 +102,13 @@ function GalleryGrid({
         borderRadius: 18,
         overflow: "hidden",
         boxShadow: "0 3px 22px #acc7fe27",
-        margin: "18px 0 30px 0",
-        position: "relative"
+        margin: isMobile ? "12px 0 14px 0" : "18px 0 30px 0",
+        position: "relative",
+        width: isMobile ? "98vw" : "100%",
+        maxWidth: isMobile ? "98vw" : "100%"
       }}>
         <img src={`http://localhost:4000${photos[0].url}`} alt="Place" style={{
-          width: "100%", maxHeight: 420, objectFit: "cover", borderRadius: 18, cursor: "pointer"
+          width: "100%", maxHeight: isMobile ? 220 : 420, objectFit: "cover", borderRadius: 18, cursor: "pointer"
         }} 
         onClick={() => setModalPhoto(`http://localhost:4000${photos[0].url}`)}
         />
@@ -108,25 +131,27 @@ function GalleryGrid({
     <>
     <div style={{
       display: "grid",
-      gridTemplateColumns: "1.8fr 1fr",
+      gridTemplateColumns: isMobile ? "1fr" : "1.8fr 1fr",
       gap: "8px",
       borderRadius: "18px",
       overflow: "hidden",
-      minHeight: "300px",
+      minHeight: isMobile ? "120px" : "300px",
       boxShadow: "0 3px 22px #acc7fe27",
-      margin: "18px 0 30px 0",
-      position: "relative"
+      margin: isMobile ? "14px 0" : "18px 0 30px 0",
+      position: "relative",
+      width: isMobile ? "98vw" : "",
+      maxWidth: isMobile ? "98vw" : ""
     }}>
-      <div style={{ gridRow: "1 / span 2", position: "relative", overflow: "hidden" }}>
+      <div style={{ gridRow: isMobile ? "auto" : "1 / span 2", position: "relative", overflow: "hidden" }}>
         <img
           src={`http://localhost:4000${photos[0].url}`}
           alt="Main place"
           style={{
             width: "100%",
             height: "100%",
-            maxHeight: "420px",
+            maxHeight: isMobile ? "220px" : "420px",
             objectFit: "cover",
-            borderRadius: "15px 0 0 15px",
+            borderRadius: isMobile ? "15px" : "15px 0 0 15px",
             cursor: "pointer"
           }}
           onClick={() => setModalPhoto(`http://localhost:4000${photos[0].url}`)}
@@ -141,21 +166,20 @@ function GalleryGrid({
       </div>
       {/* Grid of up to 4 more */}
       <div style={{
-        display: "grid",
-        gridTemplateRows: "1fr 1fr",
-        gridTemplateColumns: "1fr 1fr",
+        display: isMobile ? "flex" : "grid",
+        flexDirection: isMobile ? "row" : undefined,
+        gridTemplateRows: isMobile ? undefined : "1fr 1fr",
+        gridTemplateColumns: isMobile ? undefined : "1fr 1fr",
         gap: "8px"
       }}>
         {photos.slice(1, 5).map((photo, i) => (
           <div key={i} style={{
-            width: "100%",
-            height: "140px",
+            width: isMobile ? 80 : "100%",
+            height: isMobile ? 80 : "140px",
             overflow: "hidden",
             borderRadius:
-              i === 0 ? "0 15px 0 0" :
-                i === 1 ? "0 0 0 0" :
-                  i === 2 ? "0 0 15px 0" :
-                    i === 3 ? "0 0 0 0" : 0,
+              i === 0 && !isMobile ? "0 15px 0 0" :
+                i === 2 && !isMobile ? "0 0 15px 0" : 15,
             position: "relative"
           }}>
             <img
@@ -219,6 +243,7 @@ export default function PlaceDetail() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const isMobile = window.innerWidth < 700;
 
   useEffect(() => {
     if (!id) return;
@@ -267,19 +292,19 @@ export default function PlaceDetail() {
 
   return (
     <div
+      className={isMobile ? "main-container mobile-main" : "main-container"}
       style={{
-        maxWidth: 1200,
-        margin: "2rem auto",
-        display: "grid",
-        gridTemplateColumns: "1.7fr 1.15fr",
-        gap: "40px",
+        maxWidth: isMobile ? "100vw" : 1200,
+        margin: isMobile ? "0 auto" : "2rem auto",
+        display: isMobile ? "block" : "grid",
+        gridTemplateColumns: !isMobile ? "1.7fr 1.15fr" : undefined,
+        gap: !isMobile ? "40px" : undefined,
         fontFamily: "Montserrat, Arial, sans-serif",
-        gridTemplateRows: "auto",
+        gridTemplateRows: "auto"
       }}
-      className={window.innerWidth < 600 ? "mobile-place-detail" : ""}
     >
       {/* LEFT COLUMN */}
-      <div>
+      <div className={isMobile ? "details-left" : ""}>
         <button
           onClick={() => navigate("/")}
           style={{
@@ -293,31 +318,20 @@ export default function PlaceDetail() {
             fontWeight: 700,
           }}
         >
-          {/* Español-inglés */}
           {i18n.language === "es"
             ? "← Volver a las propiedades"
             : t("place.back", "← Back to places")}
         </button>
 
-        <div className="place-detail-header" style={{ display: "flex", alignItems: "flex-end", gap: 18, marginBottom: 7 }}>
-          <h2 className="place-detail-title"
-              style={{
-                fontSize: "2.23rem",
-                fontWeight: 900,
-                color: "#1a245f",
-                letterSpacing: "-1.7px",
-                margin: 0,
-                padding: 0,
-              }}>
-            {place.title}
-          </h2>
+        <div className="place-detail-header">
+          <h2 className="place-detail-title">{place.title}</h2>
           {isOwner && (
             <button
               className="vibrant-btn"
               style={{
-                marginLeft: 16,
+                marginLeft: isMobile ? 0 : 16,
                 marginBottom: 5,
-                padding: "8px 25px",
+                padding: isMobile ? "7px 15vw" : "8px 25px",
                 fontWeight: 800,
               }}
               onClick={() => navigate(`/places/${place.id}/edit`)}
@@ -333,14 +347,15 @@ export default function PlaceDetail() {
           onDeletePhoto={isOwner ? handleDeletePhoto : undefined}
           isOwner={!!isOwner}
         />
+
         <div style={{
-          margin: "28px 0 22px 0",
-          padding: "14px 0 8px 0",
+          margin: isMobile ? "14px 0 22px 0" : "28px 0 22px 0",
+          padding: isMobile ? "9px 0 7px 0" : "14px 0 8px 0",
           display: "flex",
           flexWrap: "wrap",
-          gap: 18,
+          gap: isMobile ? 11 : 18,
         }}>
-          <span style={{ fontWeight: 800, fontSize: "1.17rem", marginRight: 18 }}>
+          <span style={{ fontWeight: 800, fontSize: "1.17rem", marginRight: isMobile ? 8 : 18 }}>
             {i18n.language === "es"
               ? "Amenidades:"
               : t("place.amenities", "Amenities:")}
@@ -375,10 +390,10 @@ export default function PlaceDetail() {
         <div style={{ color: "#7a7a7a", marginBottom: 13, fontSize: "1.11rem" }}>
           {place.description}
         </div>
-        <div style={{ fontSize: "1.18rem", margin: "10px 0 9px 0", color: "#2a446e" }}>
+        <div style={{ fontSize: "1.18rem", margin: isMobile ? "10px 0 9px 0" : "10px 0 9px 0", color: "#2a446e" }}>
           <b>{i18n.language === "es" ? "Precio:" : t("place.price", "Price:")} </b>
           {formatPrice(place.price, i18n.language)}
-          <span style={{ marginLeft: 18 }}>
+          <span style={{ marginLeft: isMobile ? 6 : 18 }}>
             <b>{i18n.language === "es" ? "Latitud:" : t("place.lat", "Latitude:")}</b> {Number(place.latitude).toFixed(2)},
             <b>{i18n.language === "es" ? " Longitud:" : t("place.long", "Longitude:")}</b> {Number(place.longitude).toFixed(2)}
           </span>
@@ -420,8 +435,8 @@ export default function PlaceDetail() {
             }}
             className="vibrant-btn"
             style={{
-              marginTop: "32px",
-              padding: "13px 34px",
+              marginTop: isMobile ? "25px" : "32px",
+              padding: isMobile ? "11px 12vw" : "13px 34px",
               borderRadius: "10px",
               fontWeight: 700,
               fontSize: "1.03em",
@@ -432,22 +447,22 @@ export default function PlaceDetail() {
         )}
       </div>
 
-      {/* RIGHT COLUMN (SIDEBAR) */}
-      <div style={{
-        width: window.innerWidth < 700 ? "100vw" : "",
-        minWidth: window.innerWidth < 700 ? "100vw" : "",
-        maxWidth: window.innerWidth < 700 ? "100vw" : "",
+      {/* RIGHT COLUMN */}
+      <div className={isMobile ? "details-right" : ""} style={{
+        width: isMobile ? "100vw" : "",
+        minWidth: isMobile ? "100vw" : "",
+        maxWidth: isMobile ? "100vw" : "",
       }}>
         <div className="glass"
           style={{
-            padding: "28px 24px 18px 24px",
+            padding: isMobile ? "18px 7vw 12px 7vw" : "28px 24px 18px 24px",
             marginBottom: "38px",
             borderRadius: 18,
             boxShadow: "0 6px 22px #acc7fe1f",
             background: "rgba(255,255,255,0.27)",
             backdropFilter: "blur(14px)",
-            width: window.innerWidth < 700 ? "100vw" : "",
-            maxWidth: window.innerWidth < 700 ? "100vw" : "",
+            width: isMobile ? "100vw" : "",
+            maxWidth: isMobile ? "100vw" : "",
           }}>
           <BookingCardSidebar
             price={place.price}
@@ -466,23 +481,23 @@ export default function PlaceDetail() {
           style={{
             borderRadius: 18,
             overflow: "hidden",
-            marginBottom: "10px",
+            marginBottom: isMobile ? "16px" : "10px",
             boxShadow: "0 6px 22px #acc7fe1f",
             background: "rgba(255,255,255,0.28)",
             backdropFilter: "blur(14px)",
-            minHeight: window.innerWidth < 700 ? "320px" : "440px",
-            minWidth: window.innerWidth < 700 ? "100vw" : "470px",
-            width: window.innerWidth < 700 ? "100vw" : "470px",
-            height: window.innerWidth < 700 ? "320px" : "440px",
-            maxWidth: window.innerWidth < 700 ? "100vw" : "100%",
+            minHeight: isMobile ? "240px" : "440px",
+            minWidth: isMobile ? "100vw" : "470px",
+            width: isMobile ? "100vw" : "470px",
+            height: isMobile ? "240px" : "440px",
+            maxWidth: isMobile ? "100vw" : "100%",
             maxHeight: "100%",
           }}>
           <PlaceMap
             latitude={place.latitude}
             longitude={place.longitude}
             title={place.title}
-            height={window.innerWidth < 700 ? "320px" : "410px"}
-            width={window.innerWidth < 700 ? "100vw" : "470px"}
+            height={isMobile ? "230px" : "410px"}
+            width={isMobile ? "100vw" : "470px"}
           />
         </div>
       </div>

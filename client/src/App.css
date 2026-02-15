@@ -528,7 +528,7 @@ a:hover {
     max-width: 100vw !important;
     overflow-x: hidden;
   }
-  
+
   .card { width: 98vw !important; }
   .header { flex-direction: column !important; }
   nav, .nav-bar {
@@ -536,5 +536,57 @@ a:hover {
     align-items: stretch !important;
     gap: 7px;
     width: 100vw !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .main-container,
+  .mobile-main,
+  .glass,
+  .card,
+  .calendar-container,
+  .photo-gallery {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 auto 14px auto !important;
+    padding: 8px 2vw !important;
+    border-radius: 13px !important;
+  }
+
+  .featured-list,
+  .place-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .header,
+  nav {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100vw !important;
+    gap: 8px !important;
+  }
+
+  .calendar-container {
+    margin-bottom: 24px !important;
+    width: 98vw !important;
+  }
+
+  .gallery-grid img, .gallery-grid {
+    width: 98vw !important;
+    max-width: 100vw !important;
+    height: auto !important;
+  }
+
+  .amenities {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .review-box, .search-bar {
+    width: 100vw !important;
+    padding: 8px 7px !important;
+    border-radius: 11px;
   }
 }
