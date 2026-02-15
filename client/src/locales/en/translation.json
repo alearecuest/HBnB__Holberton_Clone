@@ -33,5 +33,11 @@
     "onlyfavs": "Only favorites",
     "addfav": "Add to favorites",
     "removefav": "Remove from favorites"
+  },
+
+  "createplace": {
+    "title": "Create place",
+    "submit": "Create Place",
+    "creating": "Creating..."
   }
 }

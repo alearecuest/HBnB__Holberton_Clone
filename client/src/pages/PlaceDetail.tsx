@@ -51,6 +51,7 @@ function GalleryGrid({
   onDeletePhoto?: (index: number) => void;
   isOwner: boolean;
 }) {
+  const [modalPhoto, setModalPhoto] = useState<string | null>(null);
   const { t } = useTranslation();
   const deleteBtnStyle = {
     position: "absolute",
@@ -72,26 +73,8 @@ function GalleryGrid({
     padding: 0
   };
 
-  if (!photos || photos.length === 0) {
-    return (
-      <div style={{
-        padding: 32,
-        background: "#f1f4fa",
-        borderRadius: 18,
-        minHeight: 180,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        boxShadow: "0 4px 18px #0002",
-        fontWeight: 600,
-        color: "#667",
-        letterSpacing: "0.5px"
-      }}>
-        <span role="img" aria-label="No photo" style={{ fontSize: "3em", marginRight: 15 }}>🏡</span>
-        {t("place.nophotos", "No photos added yet. Be the first to upload!")}
-      </div>
-    );
-  }
+  if (!photos || photos.length === 0)
+
   if (photos.length === 1) {
     return (
       <div style={{
@@ -102,8 +85,10 @@ function GalleryGrid({
         position: "relative"
       }}>
         <img src={`http://localhost:4000${photos[0].url}`} alt="Place" style={{
-          width: "100%", maxHeight: 420, objectFit: "cover", borderRadius: 18
-        }} />
+          width: "100%", maxHeight: 420, objectFit: "cover", borderRadius: 18, cursor: "pointer"
+        }} 
+        onClick={() => setModalPhoto(`http://localhost:4000${photos[0].url}`)}
+        />
         {isOwner && onDeletePhoto && (
           <button
             onClick={() => onDeletePhoto(0)}
@@ -111,10 +96,16 @@ function GalleryGrid({
             title={t("place.deletephoto", "Delete photo")}
           >×</button>
         )}
+        {modalPhoto && (
+          <div className="modal" onClick={() => setModalPhoto(null)}>
+            <img src={modalPhoto} alt="Enlarged" />
+          </div>
+        )}
       </div>
     );
   }
   return (
+    <>
     <div style={{
       display: "grid",
       gridTemplateColumns: "1.8fr 1fr",
@@ -135,8 +126,10 @@ function GalleryGrid({
             height: "100%",
             maxHeight: "420px",
             objectFit: "cover",
-            borderRadius: "15px 0 0 15px"
+            borderRadius: "15px 0 0 15px",
+            cursor: "pointer"
           }}
+          onClick={() => setModalPhoto(`http://localhost:4000${photos[0].url}`)}
         />
         {isOwner && onDeletePhoto && (
           <button
@@ -172,8 +165,10 @@ function GalleryGrid({
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                borderRadius: "inherit"
+                borderRadius: "inherit",
+                cursor: "pointer"
               }}
+              onClick={() => setModalPhoto(`http://localhost:4000${photo.url}`)}
             />
             {isOwner && onDeletePhoto && (
               <button
@@ -205,6 +200,12 @@ function GalleryGrid({
         >{t("place.showallphotos", "Show all photos")}</button>
       )}
     </div>
+    {modalPhoto && (
+      <div className="modal" onClick={() => setModalPhoto(null)}>
+        <img src={modalPhoto} alt="Enlarged" />
+      </div>
+    )}
+    </>
   );
 }
 

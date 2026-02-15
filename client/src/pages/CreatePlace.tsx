@@ -78,14 +78,27 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    if (!form.title.trim())
-      return setError(t("form.errtitle", "Title is required."));
-    if (!form.description.trim())
-      return setError(t("form.errdesc", "Description is required."));
-    if (!form.price)
-      return setError(t("form.errprice", "Price is required."));
-    if (photos.length < 1)
-      return setError(t("form.errphoto", "At least one photo is required."));
+    // Valida campos, SIEMPRE resetea submitting en error/return:
+    if (!form.title.trim()) {
+      setError(t("form.errtitle", "Title is required."));
+      setSubmitting(false);
+      return;
+    }
+    if (!form.description.trim()) {
+      setError(t("form.errdesc", "Description is required."));
+      setSubmitting(false);
+      return;
+    }
+    if (!form.price) {
+      setError(t("form.errprice", "Price is required."));
+      setSubmitting(false);
+      return;
+    }
+    if (photos.length < 1) {
+      setError(t("form.errphoto", "At least one photo is required."));
+      setSubmitting(false);
+      return;
+    }
     try {
       const place = await createPlace({
         ...form,
@@ -107,7 +120,9 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
         });
         if (!res.ok) {
           const err = await res.json();
-          throw new Error(err.error || t("form.errupload", "Error uploading photo(s)"));
+          setError(err.error || t("form.errupload", "Error uploading photo(s)"));
+          setSubmitting(false);
+          return;
         }
       }
       setError(null);
@@ -117,19 +132,22 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
       onCreated();
     } catch (err: any) {
       setError(err.message || t("form.errcreate", "Error creating place"));
+      setSubmitting(false);
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitting(false);
   }
 
+  const isMobile = window.innerWidth < 700;
   const outerBoxStyles: React.CSSProperties = {
-    maxWidth: "1000px",
-    minWidth: 320,
-    width: "96vw",
-    margin: "38px auto",
+    maxWidth: isMobile ? "98vw" : "1000px",
+    minWidth: isMobile ? "98vw" : "340px",
+    width: "100vw",
+    margin: isMobile ? "0 auto" : "38px auto",
     background: "rgba(255,255,255,0.33)",
     borderRadius: 24,
     boxShadow: "0 8px 38px #90ccff24, 0 2px 18px #86bafd23",
-    padding: "58px 54px 46px 54px",
+    padding: isMobile ? "24px 5vw 24px 5vw" : "58px 54px 46px 54px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center"
@@ -137,26 +155,39 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} style={outerBoxStyles}>
-      <h2>{t("createplace.title", "Create place")}</h2>
-      <label htmlFor="title" style={{ fontWeight: 500 }}>{t("form.title", "Title")}</label>
-      <input id="title" name="title" placeholder={t("form.titleph", "e.g. Cozy Loft Downtown")} value={form.title} onChange={handleChange} required />
+      <h2 style={{
+        fontSize: isMobile ? "1.45em" : "2.1em",
+        textAlign: "center"
+      }}>
+        {t("createplace.title", "Crear propiedad")}
+      </h2>
+      <label htmlFor="title" style={{ fontWeight: 500, width: "100%" }}>{t("form.title", "Título")}</label>
+      <input id="title" name="title" placeholder={t("form.titleph", "e.g. Cozy Loft Downtown")} value={form.title} onChange={handleChange} required style={{width:"100%"}}/>
 
-      <label htmlFor="description" style={{ fontWeight: 500 }}>{t("form.description", "Description")}</label>
-      <input id="description" name="description" placeholder={t("form.descriptionph", "e.g. 2 bedrooms, kitchen, bathroom")} value={form.description} onChange={handleChange} required />
+      <label htmlFor="description" style={{ fontWeight: 500, width: "100%" }}>{t("form.description", "Descripción")}</label>
+      <input id="description" name="description" placeholder={t("form.descriptionph", "e.g. 2 bedrooms, kitchen, bathroom")} value={form.description} onChange={handleChange} required style={{width:"100%"}}/>
 
-      <label htmlFor="price" style={{ fontWeight: 500 }}>{t("form.price", "Price")}</label>
-      <input id="price" name="price" type="number" placeholder={t("form.priceph", "e.g. U$S 50 per day")} value={form.price} onChange={handleChange} required />
+      <label htmlFor="price" style={{ fontWeight: 500, width: "100%" }}>{t("form.price", "Precio")}</label>
+      <input id="price" name="price" type="number" placeholder={t("form.priceph", "e.g. U$S 50 per day")} value={form.price} onChange={handleChange} required style={{width:"100%"}}/>
 
-      <label htmlFor="latitude" style={{ fontWeight: 500 }}>{t("form.latitude", "Latitude")}</label>
-      <input id="latitude" name="latitude" type="number" placeholder={t("form.latitudeph", "e.g. -34.6037")} value={form.latitude} onChange={handleChange} required />
+      <label htmlFor="latitude" style={{ fontWeight: 500, width: "100%" }}>{t("form.latitude", "Latitud")}</label>
+      <input id="latitude" name="latitude" type="number" placeholder={t("form.latitudeph", "e.g. -34.6037")} value={form.latitude} onChange={handleChange} required style={{width:"100%"}}/>
 
-      <label htmlFor="longitude" style={{ fontWeight: 500 }}>{t("form.longitude", "Longitude")}</label>
-      <input id="longitude" name="longitude" type="number" placeholder={t("form.longitudeph", "e.g. -58.3816")} value={form.longitude} onChange={handleChange} required />
+      <label htmlFor="longitude" style={{ fontWeight: 500, width: "100%" }}>{t("form.longitude", "Longitud")}</label>
+      <input id="longitude" name="longitude" type="number" placeholder={t("form.longitudeph", "e.g. -58.3816")} value={form.longitude} onChange={handleChange} required style={{width:"100%"}}/>
 
-      {/* Amenities section */}
+      {/* Amenities */}
       <div style={{ margin: "24px 0 19px 0", width:"100%"}}>
-        <b style={{ fontSize: "1.14em" }}>{t("form.amenities", "Select amenities:")}</b>
-        <div style={{ marginTop: 13, marginBottom: 7, display: "flex", flexWrap: "wrap", gap: 14, width:"100%" }}>
+        <b style={{ fontSize: "1.15em" }}>{t("form.amenities", "Amenidades")}</b>
+        <div style={{
+          marginTop: 13,
+          marginBottom: 7,
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 10,
+          width:"100%",
+          flexDirection: isMobile ? "column" : "row"
+        }}>
           {amenities.length === 0 && <span style={{ color: "#aaa" }}>{t("form.noamenities", "No amenities available")}</span>}
           {amenities.map(a => (
             <label key={a.id} style={{
@@ -167,8 +198,10 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
               fontWeight: 600,
               fontSize: 15,
               cursor: "pointer",
-              minWidth: 110,
-              marginBottom: 5
+              minWidth: isMobile ? "90%" : 110,
+              marginBottom: 5,
+              display: isMobile ? "block" : "inline-block",
+              width: isMobile ? "92vw" : "auto"
             }}>
               <input
                 type="checkbox"
@@ -277,7 +310,7 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
         }}
       >
         {submitting
-          ? t("createplace.creating", "Creating...")
+          ? t("createplace.creating", i18n.language === "es" ? "Creando..." : "Creating...")
           : t("createplace.submit", "Crear propiedad")}
       </button>
       {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}

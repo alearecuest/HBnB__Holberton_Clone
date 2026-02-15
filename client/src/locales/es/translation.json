@@ -70,5 +70,11 @@
     "latitude": "Latitud",
     "longitude": "Longitud",
     "amenities": "Amenidades"
+  },
+
+  "createplace": {
+    "title": "Crear propiedad",
+    "submit": "Crear propiedad",
+    "creating": "Creando..."
   }
 }

@@ -6,6 +6,7 @@ import { PlaceService } from "../services/PlaceService";
 import { validateBody } from "../middlewares/validateBody";
 import { placeCreateSchema, placeUpdateSchema } from "../schemas/placeSchema";
 import { authenticateJWT, AuthenticatedRequest } from "../middlewares/auth";
+import { availabilityRepository } from "../repositories/AvailabilityRepository";
 
 const uploadDir = path.join(__dirname, "../../uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
@@ -23,10 +24,10 @@ const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
   try {
-      const places = await PlaceService.getAll();
-      res.status(200).json(places);
+    const places = await PlaceService.getAll();
+    res.status(200).json(places);
   } catch (err) {
-      res.status(500).json({ error: "Could not fetch places" });
+    res.status(500).json({ error: "Could not fetch places" });
   }
 });
 
@@ -38,6 +39,22 @@ router.get("/:id", async (req: Request, res: Response) => {
     res.json(place);
   } catch (err) {
     res.status(500).json({ error: "Error fetching place detail" });
+  }
+});
+
+router.get("/:placeId/availabilities", async (req: Request, res: Response) => {
+  try {
+    const { placeId } = req.params;
+    const availabilities = await availabilityRepository.find({
+      relations: ["place"],
+      order: { date: "ASC" }
+    });
+    const filtered = availabilities.filter(a =>
+      a.place && a.place.id === placeId && a.blocked === true
+    );
+    res.json(filtered);
+  } catch (err) {
+    res.status(500).json({ error: "Could not fetch availabilities" });
   }
 });
 
@@ -126,6 +143,21 @@ router.delete("/:placeId/photos/:photoIndex", authenticateJWT, async (req: Authe
     res.status(204).end();
   } catch (err) {
     res.status(500).json({ error: "Could not delete photo" });
+  }
+});
+
+router.post("/:placeId/blockdates", authenticateJWT, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { placeId } = req.params;
+    const { from, to } = req.body;
+    const userId = req.user!.userId;
+    const place = await PlaceService.getById(placeId);
+    if (!place) return res.status(404).json({ error: "Place not found" });
+    if (!place.owner || place.owner.id !== userId) return res.status(403).json({ error: "Forbidden" });
+    await PlaceService.blockDates(placeId, from, to);
+    res.status(200).json({ ok: true });
+  } catch (err) {
+    res.status(400).json({ error: "Could not block dates" });
   }
 });
 

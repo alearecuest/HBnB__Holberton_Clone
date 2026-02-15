@@ -5,10 +5,10 @@ import { Place } from "./Place";
 @Entity("availabilities")
 export class Availability extends BaseEntity {
   @Column({ type: "date" })
-  from!: string;
+  date!: string;
 
-  @Column({ type: "date" })
-  to!: string;
+  @Column({ default: true })
+  blocked!: boolean;
 
   @ManyToOne(() => Place, (place) => place.availabilities, { onDelete: "CASCADE" })
   place!: Place;

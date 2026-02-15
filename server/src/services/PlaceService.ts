@@ -3,6 +3,7 @@ import { placePhotoRepository } from "../repositories/PlacePhotoRepository";
 import { placeRepository } from "../repositories/PlaceRepository";
 import { amenityRepository } from "../repositories/AmenityRepository";
 import { Place } from "../entities/Place";
+import { availabilityRepository } from "../repositories/AvailabilityRepository";
 
 export class PlaceService {
   static async create(placeData: Partial<Place>): Promise<Place> {
@@ -81,5 +82,39 @@ export class PlaceService {
       where: { id },
       relations: ["photos", "owner", "amenities"]
     });
+  }
+
+  static async blockDates(placeId: string, from: string, to: string) {
+    const place = await placeRepository.findOne({ where: { id: placeId } });
+    if (!place) throw new Error("Place not found!");
+
+    const start = new Date(from);
+    const end = new Date(to);
+
+    let date = new Date(start);
+    const blockedDates: string[] = [];
+    while (date <= end) {
+      blockedDates.push(date.toISOString().slice(0, 10));
+      date.setDate(date.getDate() + 1);
+    }
+
+    const alreadyBlocked = await availabilityRepository.find({
+      where: blockedDates.map(date => ({
+        place: { id: placeId },
+        date,
+        blocked: true,
+      })),
+    });
+    if (alreadyBlocked.length > 0) {
+      throw new Error("Some days are already blocked.");
+    }
+
+    for (const day of blockedDates) {
+      await availabilityRepository.save({
+        place: place,
+        date: day,
+        blocked: true
+      });
+    }
   }
 }

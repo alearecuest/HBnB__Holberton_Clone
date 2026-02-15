@@ -35,14 +35,13 @@ export class Place extends BaseEntity {
 
 	@ManyToMany(() => Amenity, (amenity) => amenity.places)
 	@JoinTable({
-			name: "place_amenities",
-			joinColumn: { name: "place_id", referencedColumnName: "id" },
-			inverseJoinColumn: { name: "amenity_id", referencedColumnName: "id" },
+		name: "place_amenities",
+		joinColumn: { name: "place_id", referencedColumnName: "id" },
+		inverseJoinColumn: { name: "amenity_id", referencedColumnName: "id" },
 	})
 	amenities!: Amenity[];
 
 	@OneToMany(() => Review, (review) => review.place)
-	
 	reviews!: Review[];
 
 	@OneToMany(() => PlacePhoto, (photo) => photo.place, { cascade: true })

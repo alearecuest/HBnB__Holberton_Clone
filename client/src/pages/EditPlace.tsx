@@ -20,7 +20,7 @@ const amenityNameMap: Record<string, { es: string, en: string }> = {
   "Barbecue": { es: "Parrillero", en: "Barbecue" }
 };
 
-export default function EditPlace({ id, onBack }: { id: string, onBack: () => void }) {
+export default function EditPlace({ id, onBack }: { id: string, onBack?: () => void }) {
   const { t, i18n } = useTranslation();
   const [place, setPlace] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -96,7 +96,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
     });
     if (res.ok) {
       alert(t("editplace.deletesuccess", "Place deleted!"));
-      onBack();
+      onBack?.();
     } else {
       alert(t("editplace.errordeleteplace", "Error deleting place."));
     }
@@ -143,7 +143,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
     setSaving(false);
     if (res.ok) {
       alert(t("editplace.savesuccess", "Saved!"));
-      onBack();
+      onBack?.();
       return;
     } else {
       alert(t("editplace.errorsave", "Could not save changes."));
@@ -173,15 +173,16 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
     padding: 0
   };
 
+  const isMobile = window.innerWidth < 700;
   const outerBoxStyles: React.CSSProperties = {
-    maxWidth: "1000px",
-    minWidth: 320,
-    width: "96vw",
-    margin: "38px auto",
+    maxWidth: isMobile ? "98vw" : "1000px",
+    minWidth: isMobile ? "98vw" : "340px",
+    width: "100vw",
+    margin: isMobile ? "0 auto" : "38px auto",
     background: "rgba(255,255,255,0.33)",
     borderRadius: 24,
     boxShadow: "0 8px 38px #90ccff24, 0 2px 18px #86bafd23",
-    padding: "54px 50px 44px 50px",
+    padding: isMobile ? "24px 5vw 24px 5vw" : "56px 44px 38px 44px",
     fontFamily: "Montserrat, Arial, sans-serif",
     display: "flex",
     flexDirection: "column",
@@ -201,13 +202,13 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
       >
         ← {i18n.language === "es" ? "Volver" : t("editplace.back", "Back")}
       </button>
-      <h2 style={{ marginTop: 2, fontSize: "1.7rem", fontWeight: 800 }}>
+      <h2 style={{ marginTop: 2, fontSize: isMobile ? "1.45em" : "2em", fontWeight: 800 }}>
         {i18n.language === "es"
           ? "Editar publicación"
           : t("editplace.title", "Edit publication")}
       </h2>
       <form onSubmit={handleSave} style={{width:"100%"}}>
-        <label style={{ display: "block", marginBottom: 9, fontWeight: 600 }}>
+        <label style={{ display: "block", marginBottom: 9, fontWeight: 600, width: "100%" }}>
           {i18n.language === "es"
             ? "Título:"
             : t("editplace.formtitle", "Title:")}
@@ -219,7 +220,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             required
           />
         </label>
-        <label style={{ display: "block", marginBottom: 13, fontWeight: 600 }}>
+        <label style={{ display: "block", marginBottom: 13, fontWeight: 600, width: "100%" }}>
           {i18n.language === "es"
             ? "Descripción:"
             : t("editplace.formdesc", "Description:")}
@@ -243,11 +244,11 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             step={0.01}
             onChange={e => setPrice(e.target.value)}
             placeholder={t("form.priceph", "e.g. U$S 50 per day")}
-            style={{ width: 110, marginLeft: 8, padding: 6, borderRadius: 7, border: "1px solid #d9e2ee" }}
+            style={{ width: "100%", marginLeft: 0, padding: 6, borderRadius: 7, border: "1px solid #d9e2ee", marginTop: 4 }}
             required
           />
         </label>
-        <label style={{ display: "inline-block", marginRight: 12 }}>
+        <label style={{ display: "inline-block", marginRight: 12, width: "100%" }}>
           {i18n.language === "es"
             ? "Latitud:"
             : t("editplace.formlat", "Lat:")}
@@ -255,11 +256,11 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             value={latitude}
             onChange={e => setLatitude(e.target.value)}
             placeholder={t("form.latitudeph", "e.g. -34.6037")}
-            style={{ width: 90, marginLeft: 6, padding: 6, borderRadius: 7, border: "1px solid #d9e2ee" }}
+            style={{ width: "100%", marginLeft: 0, padding: 6, borderRadius: 7, border: "1px solid #d9e2ee", marginTop: 4 }}
             required
           />
         </label>
-        <label style={{ display: "inline-block" }}>
+        <label style={{ display: "inline-block", width: "100%" }}>
           {i18n.language === "es"
             ? "Longitud:"
             : t("editplace.formlon", "Lon:")}
@@ -267,7 +268,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             value={longitude}
             onChange={e => setLongitude(e.target.value)}
             placeholder={t("form.longitudeph", "e.g. -58.3816")}
-            style={{ width: 90, marginLeft: 6, padding: 6, borderRadius: 7, border: "1px solid #d9e2ee" }}
+            style={{ width: "100%", marginLeft: 0, padding: 6, borderRadius: 7, border: "1px solid #d9e2ee", marginTop: 4 }}
             required
           />
         </label>
@@ -285,6 +286,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             display: "flex",
             flexWrap: "wrap",
             gap: 13,
+            flexDirection: isMobile ? "column" : "row"
           }}>
             {amenities.length === 0 && <span style={{ color: "#aaa" }}>{t("editplace.noamenities", "No amenities available")}</span>}
             {amenities.map(a => (
@@ -296,8 +298,10 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
                 fontWeight: 600,
                 fontSize: 15,
                 cursor: "pointer",
-                minWidth: 110,
-                marginBottom: 5
+                minWidth: isMobile ? "90%" : 110,
+                marginBottom: 5,
+                width: isMobile ? "95vw" : "auto",
+                display: isMobile ? "block" : "inline-block"
               }}>
                 <input
                   type="checkbox"
@@ -382,7 +386,8 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             fontSize: "1.17em",
             marginTop: "29px",
             boxShadow: "0 3px 16px #3650f724",
-            alignSelf: "center"
+            alignSelf: "center",
+            width: isMobile ? "100%" : "auto"
           }}>
           {saving
             ? (i18n.language === "es" ? "Guardando..." : t("editplace.saving", "Saving..."))
@@ -405,7 +410,8 @@ export default function EditPlace({ id, onBack }: { id: string, onBack: () => vo
             marginTop: "36px",
             marginBottom: "10px",
             boxShadow: "0 3px 16px #fa667526",
-            alignSelf: "center"
+            alignSelf: "center",
+            width: isMobile ? "100%" : "auto"
           }}>
           {i18n.language === "es" ? "Eliminar propiedad" : t("editplace.delete", "Delete place")}
         </button>

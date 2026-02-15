@@ -12,16 +12,17 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   const [to, setTo] = useState("");
   const [guests, setGuests] = useState(1);
 
+  const isMobile = window.innerWidth < 700;
+
   return (
     <form
       onSubmit={e => { e.preventDefault(); onSearch({ location, dateRange: { from, to }, guests }); }}
       style={{
         display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap: 14,
-        alignItems: "flex-end",
-        justifyContent: "center",
+        flexDirection: isMobile ? "column" : "row",
+        gap: isMobile ? 13 : 18,
+        alignItems: isMobile ? "stretch" : "flex-end",
+        justifyContent: isMobile ? "stretch" : "center",
         padding: "20px 0",
         background: "rgba(255,255,255,0.88)",
         margin: "0 auto 28px auto",
@@ -30,23 +31,24 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         maxWidth: 990,
       }}
     >
-      <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start", width:135, minWidth:120}}>
-        <label htmlFor="search-location">{t("search.location", "¿Dónde?")}</label>
+      <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start", width: isMobile ? "100%" : "auto"}}>
+        <label htmlFor="search-location">{t("search.location", "Where to?")}</label>
         <input
           id="search-location"
           type="text"
-          placeholder={t("search.location", "¿Dónde?")}
+          placeholder={t("search.location", "Where to?")}
           value={location}
           onChange={e => setLocation(e.target.value)}
           style={{
             fontSize: "1rem",
             height: "42px",
-            width: "100%"
+            width: isMobile ? "100%" : "140px",
+            marginBottom: isMobile ? 6 : 0
           }}
         />
       </div>
-      <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start", width:120}}>
-        <label htmlFor="search-from">{t("search.from", "Desde")}</label>
+      <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start", width: isMobile ? "100%" : "auto"}}>
+        <label htmlFor="search-from">{t("search.from", "From")}</label>
         <input
           id="search-from"
           type="date"
@@ -55,12 +57,13 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           style={{
             fontSize: "1rem",
             height: "42px",
-            width: "100%"
+            width: isMobile ? "100%" : "120px",
+            marginBottom: isMobile ? 6 : 0
           }}
         />
       </div>
-      <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start", width:120}}>
-        <label htmlFor="search-to">{t("search.to", "Hasta")}</label>
+      <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start", width: isMobile ? "100%" : "auto"}}>
+        <label htmlFor="search-to">{t("search.to", "To")}</label>
         <input
           id="search-to"
           type="date"
@@ -69,12 +72,13 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           style={{
             fontSize: "1rem",
             height: "42px",
-            width: "100%"
+            width: isMobile ? "100%" : "120px",
+            marginBottom: isMobile ? 6 : 0
           }}
         />
       </div>
-      <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start", width:90}}>
-        <label htmlFor="search-guests">{t("search.guests", "Huéspedes")}</label>
+      <div style={{display: "flex", flexDirection:"column", alignItems:"flex-start", width: isMobile ? "100%" : "auto"}}>
+        <label htmlFor="search-guests">{t("search.guests", "Guests")}</label>
         <input
           id="search-guests"
           type="number"
@@ -85,16 +89,24 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           style={{
             fontSize: "1rem",
             height: "42px",
-            width: "100%"
+            width: isMobile ? "100%" : "70px",
+            marginBottom: isMobile ? 10 : 0
           }}
         />
       </div>
       <button
         className="search-btn"
-        style={{height:"44px", fontWeight:700, fontSize: "1.09em", marginBottom:17, minWidth:100, alignSelf:"end"}}
+        style={{
+          height:"44px",
+          fontWeight:700,
+          fontSize: "1.09em",
+          marginTop:isMobile?10:0,
+          minWidth:isMobile?"100%":120,
+          alignSelf:isMobile?"stretch":"flex-end"
+        }}
         type="submit"
       >
-        {t("search.search", "Buscar")}
+        {t("search.search", "Search")}
       </button>
     </form>
   );
