@@ -106,6 +106,11 @@ export default function PlaceAvailabilityCalendar({
         selectRange={isOwner}
         onChange={isOwner ? onOwnerSelect : undefined}
         tileClassName={tileClassName}
+        tileContent={({ date, view }) =>
+          view === 'month' && isDateBusy(date) ? (
+          <span className="busy-emoji" role="img" aria-label="blocked">🚫</span>
+        ) : null
+        }
         minDetail="month"
         maxDetail="month"
         value={selectedRange ? selectedRange : undefined}

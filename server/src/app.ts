@@ -7,7 +7,6 @@ import amenityRouter from "./controllers/AmenityController";
 import reviewRouter from "./controllers/ReviewController";
 import authRouter from "./controllers/AuthController";
 import path from "path";
-import availabilityRouter from "./controllers/AvailabilityRouter"
 import reservationRouter from "./controllers/ReservationRouter";
 
 dotenv.config();
@@ -16,7 +15,6 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/v1", reservationRouter);
-app.use("/api/v1", availabilityRouter);
 
 app.use(cors({
     origin: ["http://localhost:5173", "http://127.0.0.1:5173"],

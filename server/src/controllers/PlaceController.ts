@@ -43,17 +43,20 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 router.get("/:placeId/availabilities", async (req: Request, res: Response) => {
+  const { placeId } = req.params;
+  console.log("Place avail endpoint!", placeId);
   try {
-    const { placeId } = req.params;
     const availabilities = await availabilityRepository.find({
+      where: {
+        place: { id: placeId },
+        blocked: true,
+      },
       relations: ["place"],
       order: { date: "ASC" }
     });
-    const filtered = availabilities.filter(a =>
-      a.place && a.place.id === placeId && a.blocked === true
-    );
-    res.json(filtered);
+    res.json(availabilities);
   } catch (err) {
+    console.error("avail endpoint error:", err);
     res.status(500).json({ error: "Could not fetch availabilities" });
   }
 });
