@@ -23,12 +23,7 @@ export default function Navbar({
   ];
 
   return (
-    <nav style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      margin: "24px 36px 18px 36px"
-    }}>
+    <nav className="navbar-hbnb">
       <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
         <img
           src={logo}
@@ -108,7 +103,7 @@ export default function Navbar({
               {t("navbar.hello", { name: user?.firstName || user?.email })}
             </span>
             <button
-              className="navbar-btn"
+              className="navbar-btn signout-btn"
               onClick={logout}
             >
               {t("navbar.signout")}

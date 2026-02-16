@@ -32,12 +32,12 @@ export default function BookingCardSidebar({
 
   return (
     <div style={{
-      width: 350,
-      maxWidth: "98vw",
+      width: "100%",
+      maxWidth: 350,
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      padding: "32px 18px 23px 18px",
+      padding: window.innerWidth < 700 ? "19px 0 18px 0" : "32px 18px 23px 18px",
       margin: "auto"
     }}>
       <div style={{
@@ -116,14 +116,14 @@ export default function BookingCardSidebar({
         <button
           type="button"
           onClick={() => onReserve({ dates: { in: dateIn, out: dateOut }, guests })}
-          className="vibrant-btn"
+          className="vibrant-btn reserve-btn"
           style={{
-            width: "92%",
+            width: "100%",
             padding: "13px 0",
             borderRadius: 10,
             marginBottom: 7,
             fontSize: "1.12em",
-            margin: "12px auto 0 auto",
+            margin: "12px 0 0 0",
             fontWeight: 900,
             height: "44px"
           }}

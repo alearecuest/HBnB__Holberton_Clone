@@ -590,3 +590,176 @@ a:hover {
     border-radius: 11px;
   }
 }
+
+@media (max-width: 700px) {
+  nav, .nav-bar {
+    flex-direction: column !important;
+    flex-wrap: wrap !important;
+    align-items: stretch !important;
+    width: 100vw !important;
+    gap: 7px;
+    padding: 0 3vw;
+  }
+
+  nav > * {
+    width: 100%;
+    min-width: 0;
+    justify-content: stretch;
+    text-align: center;
+  }
+
+  .navbar-btn, .vibrant-btn, .navbar-lang-btn, .nav-secondary-item, .signout-btn {
+    width: 96vw !important;
+    max-width: 98vw !important;
+    min-width: 40vw !important;
+    margin: 0 0 7px 0 !important;
+    height: 50px;
+    font-size: 1.12rem;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 700px) {
+  .cards-grid,
+  .featured-list,
+  .place-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 17px !important;
+    width: 98vw !important;
+    align-items: stretch !important;
+  }
+
+  .place-card, .card {
+    width: 98vw !important;
+    max-width: 99vw;
+    min-width: 0 !important;
+    margin: 0 auto;
+    padding: 0 2vw 14px 2vw;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 700px) {
+  .signout-btn {
+    width: 96vw !important;
+    max-width: 98vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 7px !important;
+    text-align: center !important;
+    font-size: 1.12rem;
+    box-sizing: border-box;
+    display: block !important;
+  }
+}
+
+@media (max-width: 700px) {
+  nav {
+    flex-direction: column !important;
+    flex-wrap: wrap !important;
+    align-items: stretch !important;
+    width: 100vw !important;
+    gap: 8px;
+    margin: 6vw 0 10px 0 !important;
+    padding: 0 2vw !important;
+    box-sizing: border-box;
+  }
+
+  nav > div,
+  nav > div > * {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+    justify-content: center !important;
+  }
+
+  .navbar-btn,
+  .navbar-lang-btn,
+  .nav-secondary-item,
+  .signout-btn {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    min-width: 0 !important;
+    margin: 0 auto 7px auto !important;
+    justify-content: center !important;
+    font-size: 1.15em !important;
+    height: 48px;
+    box-sizing: border-box;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .navbar-username {
+    display: flex !important;
+    justify-content: center !important;
+    margin: 0 0 8px 0 !important;
+    width: 98vw !important;
+    font-size: 1.1em !important;
+  }
+}
+
+.navbar-hbnb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 24px 36px 18px 36px;
+}
+
+@media (max-width: 700px) {
+  .navbar-hbnb {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100vw !important;
+    margin: 6vw 0 10px 0 !important;
+    padding: 0 2vw !important;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 700px) {
+  .booking-card-content button,
+  .booking-card-content .button,
+  .booking-card-content .search-btn,
+  .booking-card-content .vibrant-btn {
+    width: 94vw !important;
+    max-width: 97vw;
+    min-width: 60vw;
+    margin: 0 auto 0 auto !important;
+    display: block !important;
+    font-size: 1.15em;
+    box-sizing: border-box;
+  }
+
+  button.reserve-btn {
+    width: 94vw !important;
+    max-width: 97vw;
+    min-width: 60vw;
+    margin: 0 auto !important;
+    display: block !important;
+    font-size: 1.15em;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 700px) {
+  .glass.booking-card-content,
+  .booking-card-content {
+    width: 96vw !important;
+    min-width: 0 !important;
+    max-width: 98vw !important;
+    margin: 0 auto !important;
+    padding: 0 1vw !important;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 700px) {
+  .reserve-btn, .vibrant-btn.reserve-btn {
+    width: 98% !important;
+    margin: 13px 0 0 0 !important;
+    max-width: 99vw !important;
+    display: block !important;
+    font-size: 1.14em !important;
+  }
+}
