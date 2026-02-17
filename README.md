@@ -33,34 +33,61 @@ It allows users to browse, search, save favorites, book, and review unique place
 
 ---
 
-## Installation & Running Locally
+## Project Structure
+
+```
+HBnB__Holberton_Clone/
+├── client/      # React frontend (sources only, build output in server/public)
+├── server/      # Node/Express/TypeORM backend (API, static files, compiled code)
+│   ├── public/  # Frontend build (`npm run build` in client, copy dist here)
+│   ├── src/     # TS source code
+│   └── dist/    # TS compiled code for production
+```
+
+---
+
 
 ### Prerequisites
 - Node.js (v18+ recommended)
 - NPM/Yarn
 
-### Clone & Setup
+### 1. Install dependencies
 
 ```bash
-git clone https://github.com/<your-username>/hbnb.git
-cd hbnb
+# Backend
+cd server
+npm install
+
+# Frontend
+cd ../client
 npm install
 ```
 
-### Start the Backend
-```bash
-# From project root (or check your backend folder)
-npm run backend
-# By default runs on http://localhost:4000
-```
+### 2. Build and Run (production)
 
-### Start the Frontend (client)
 ```bash
+# From project root
 cd client
-npm install
-npm run dev
-# Runs on http://localhost:5173
+npm run build                    # Compiles React app
+cd ../server
+mkdir -p public                  # If not exists
+cp -r ../client/dist/* ./public/ # Copy client build to backend
+npm run build                    # Compile TypeScript backend
+npm start                        # Run backend (serves API + frontend)
 ```
+By default backend runs on http://localhost:4000
+
+---
+
+### 3. Render Deploy
+
+1. Push full repo to GitHub.
+2. Create a new Render **Web Service**:
+    - Root Directory: `server`
+    - Build Command: `npm run build`
+    - Start Command: `npm start`
+3. Add any environment variables needed (DB, JWT, etc.)
+4. Render will build, serve API and static frontend in one URL!
 
 ---
 
