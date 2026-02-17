@@ -1,6 +1,10 @@
-import React from "react";
-
-export default function FeaturedCarousel({ places, onSelect }: { places: any[], onSelect: (id: string) => void }) {
+export default function FeaturedCarousel({
+  places,
+  onSelect,
+}: {
+  places: any[];
+  onSelect: (id: string) => void;
+}) {
   if (!places || places.length === 0) return null;
 
   return (

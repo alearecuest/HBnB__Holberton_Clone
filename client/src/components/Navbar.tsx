@@ -2,25 +2,17 @@ import { useAuth } from "../context/AuthContext";
 import logo from "/logo.png";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import React from "react";
 
 export default function Navbar({
   onLoginClick,
   onRegisterClick,
-  onMenuClick,
 }: {
   onLoginClick: () => void,
   onRegisterClick: () => void,
-  onMenuClick: () => void
 }) {
   const { token, user, logout } = useAuth();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-
-  const languages = [
-    { code: "en", label: "EN" },
-    { code: "es", label: "ES" }
-  ];
 
   return (
     <nav className="navbar-hbnb">
@@ -37,19 +29,19 @@ export default function Navbar({
             display: "block"
           }}
           onClick={() => navigate("/")}
-          title="Go to home"
+          title={i18n.language === "es" ? "Ir a la página principal" : "Go to home"}
         />
         <button
           className="navbar-btn"
           onClick={() => navigate("/")}
         >
-          {t("navbar.places")}
+          {i18n.language === "es" ? "Propiedades" : t("navbar.places")}
         </button>
         <button
           className="navbar-btn"
           onClick={() => navigate("/create")}
         >
-          {t("navbar.create")}
+          {i18n.language === "es" ? "Crear" : t("navbar.create")}
         </button>
       </div>
 
@@ -83,13 +75,13 @@ export default function Navbar({
               className="navbar-btn"
               onClick={onLoginClick}
             >
-              {t("navbar.login")}
+              {i18n.language === "es" ? "Iniciar sesión" : t("navbar.login")}
             </button>
             <button
               className="navbar-btn"
               onClick={onRegisterClick}
             >
-              {t("navbar.register")}
+              {i18n.language === "es" ? "Registrarse" : t("navbar.register")}
             </button>
           </>
         ) : (
@@ -100,13 +92,15 @@ export default function Navbar({
               marginRight: 2,
               fontSize: "1.08em"
             }}>
-              {t("navbar.hello", { name: user?.firstName || user?.email })}
+              {i18n.language === "es"
+                ? `Hola, ${user?.firstName || user?.email}`
+                : t("navbar.hello", { name: user?.firstName || user?.email })}
             </span>
             <button
               className="navbar-btn signout-btn"
               onClick={logout}
             >
-              {t("navbar.signout")}
+              {i18n.language === "es" ? "Cerrar sesión" : t("navbar.signout")}
             </button>
           </>
         )}

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Reviews from "../components/Reviews";
 import PhotoGalleryLightbox from "../components/PhotoGalleryLightbox";
@@ -22,7 +23,7 @@ const amenityNameMap: Record<string, { es: string; en: string }> = {
   "Barbecue": { es: "Parrillero", en: "Barbecue" }
 };
 
-const iconsMap: { [key: string]: JSX.Element } = {
+const iconsMap: { [key: string]: React.JSX.Element } = {
   FaWifi: <FaWifi style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
   FaTv: <FaTv style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
   GiCookingPot: <GiCookingPot style={{marginRight:6, fontSize:19, verticalAlign:'middle'}}/>,
@@ -284,10 +285,12 @@ export default function PlaceDetail() {
   }
 
   if (loading) return <div style={{ margin: 40, fontSize: "1.5em" }}>{t("general.loading", "Loading...")}</div>;
-  if (fetchError) return <div style={{ margin: 40, color: "#b00", fontWeight: 700, fontSize: "1.2em" }}>
-    {t("general.errorloading", { error: fetchError }, `Error: ${fetchError}`)}
-    <br />Check console/network tab for more info.
-  </div>;
+  if (fetchError) return (
+    <div style={{ margin: 40, color: "#b00", fontWeight: 700, fontSize: "1.2em" }}>
+      {t("general.errorloading", { error: fetchError, defaultValue: `Error: ${fetchError}` })}
+      <br />Check console/network tab for more info.
+    </div>
+  );
   if (!place) return <div style={{ margin: 40, fontSize: "1.5em", color: "#a00" }}>{t("general.noplace", "Place not found")}</div>;
 
   return (
@@ -398,7 +401,12 @@ export default function PlaceDetail() {
             <b>{i18n.language === "es" ? " Longitud:" : t("place.long", "Longitude:")}</b> {Number(place.longitude).toFixed(2)}
           </span>
         </div>
-        <PlaceAvailabilityCalendar placeId={place.id} isOwner={!!isOwner} token={token} i18nLanguage={i18n.language} />
+        <PlaceAvailabilityCalendar
+          placeId={place.id}
+          isOwner={!!isOwner}
+          token={token ?? undefined}
+          i18nLanguage={i18n.language}
+        />
         {!isOwner && <Reviews placeId={place.id} />}
         {isOwner && (
           <button

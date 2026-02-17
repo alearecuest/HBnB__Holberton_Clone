@@ -12,8 +12,8 @@ const uploadDir = path.join(__dirname, "../../uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename: (_req, file, cb) => {
+  destination: (_req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => cb(null, uploadDir),
+  filename: (_req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
     const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, unique + path.extname(file.originalname));
   }
@@ -44,7 +44,6 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 router.get("/:placeId/availabilities", async (req: Request, res: Response) => {
   const { placeId } = req.params;
-  console.log("Place avail endpoint!", placeId);
   try {
     const availabilities = await availabilityRepository.find({
       where: {
@@ -56,7 +55,6 @@ router.get("/:placeId/availabilities", async (req: Request, res: Response) => {
     });
     res.json(availabilities);
   } catch (err) {
-    console.error("avail endpoint error:", err);
     res.status(500).json({ error: "Could not fetch availabilities" });
   }
 });
@@ -72,11 +70,16 @@ router.post("/", authenticateJWT, validateBody(placeCreateSchema), async (req: A
   }
 });
 
-router.post("/:placeId/photos", authenticateJWT, upload.array("photos", 10), async (req: AuthenticatedRequest, res: Response) => {
+interface MulterRequest extends AuthenticatedRequest {
+  files?: Express.Multer.File[];
+}
+
+router.post("/:placeId/photos", authenticateJWT, upload.array("photos", 10), async (req: Request, res: Response) => {
   try {
     const { placeId } = req.params;
-    if (!req.files) return res.status(400).json({ error: "No files uploaded" });
-    const photos = (req.files as Express.Multer.File[]).map(file => ({
+    const files = req.files as Express.Multer.File[];
+    if (!files || !files.length) return res.status(400).json({ error: "No files uploaded" });
+    const photos = files.map(file => ({
       url: `/uploads/${file.filename}`
     }));
     const saved = await PlaceService.addPhotos(placeId, photos);

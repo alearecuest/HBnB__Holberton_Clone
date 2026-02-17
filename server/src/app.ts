@@ -32,4 +32,10 @@ app.use("/api/v1/places", placeRouter);
 app.use("/api/v1/amenities", amenityRouter);
 app.use("/api/v1/places/:placeId/reviews", reviewRouter);
 
+app.use(express.static(path.join(__dirname, "../public")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
+
 export default app;

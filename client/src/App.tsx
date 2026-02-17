@@ -1,5 +1,4 @@
-import React from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useParams } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -10,6 +9,11 @@ import EditPlace from "./pages/EditPlace";
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
 
+function EditPlaceWrapper() {
+  const { id } = useParams<{ id: string }>();
+  return <EditPlace id={id!} />;
+}
+
 export default function App() {
   const { token } = useAuth();
   const navigate = useNavigate();
@@ -19,7 +23,6 @@ export default function App() {
       <Navbar
         onLoginClick={() => navigate("/login")}
         onRegisterClick={() => navigate("/register")}
-        onMenuClick={() => {}}
       />
       <Routes>
         <Route path="/" element={<Places />} />
@@ -32,7 +35,7 @@ export default function App() {
           }
         />
         <Route path="/places/:id" element={<PlaceDetail />} />
-        <Route path="/places/:id/edit" element={<EditPlace />} />
+        <Route path="/places/:id/edit" element={<EditPlaceWrapper />} />
       </Routes>
     </div>
   );

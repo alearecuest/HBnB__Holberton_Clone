@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createPlace } from "../api/places";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -35,12 +35,20 @@ interface PlaceForm {
   price: string;
   latitude: string;
   longitude: string;
+  amenities?: string[];
 }
 
 export default function CreatePlace({ onCreated }: CreatePlaceProps) {
   const { t, i18n } = useTranslation();
   const { token } = useAuth();
-  const [form, setForm] = useState<PlaceForm>({ title: "", description: "", price: "", latitude: "", longitude: "" });
+  const [form, setForm] = useState<PlaceForm>({
+    title: "",
+    description: "",
+    price: "",
+    latitude: "",
+    longitude: "",
+    amenities: []
+  });
   const [photos, setPhotos] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -55,7 +63,8 @@ export default function CreatePlace({ onCreated }: CreatePlaceProps) {
       .then(setAmenities);
   }, []);
 
-  if (!token) return <div>{t("createplace.needlogin", "You need to be logged in to create a place.")}</div>;
+  if (!token)
+    return <div>{t("createplace.needlogin", "You need to be logged in to create a place.")}</div>;
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -116,8 +125,8 @@ export default function CreatePlace({ onCreated }: CreatePlaceProps) {
         price: Number(form.price),
         latitude: Number(form.latitude),
         longitude: Number(form.longitude),
-        amenities: selectedAmenities
-      }, token);
+        amenities: selectedAmenities 
+      }, token!);
 
       if (photos.length && place.id) {
         const formData = new FormData();
@@ -137,7 +146,14 @@ export default function CreatePlace({ onCreated }: CreatePlaceProps) {
         }
       }
       setError(null);
-      setForm({ title: "", description: "", price: "", latitude: "", longitude: "" });
+      setForm({
+        title: "",
+        description: "",
+        price: "",
+        latitude: "",
+        longitude: "",
+        amenities: []
+      });
       setSelectedAmenities([]);
       setPhotos([]);
       onCreated();

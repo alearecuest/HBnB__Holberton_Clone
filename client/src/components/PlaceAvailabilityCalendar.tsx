@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 
@@ -17,6 +17,16 @@ interface PlaceAvailabilityCalendarProps {
   isOwner?: boolean;
   i18nLanguage?: string;
   token?: string;
+}
+
+function handleOwnerSelect(
+  value: any,
+  _event: any,
+  onOwnerSelect: (range: [Date, Date]) => Promise<void>
+) {
+  if (Array.isArray(value) && value.length === 2 && value[0] && value[1]) {
+    void onOwnerSelect(value as [Date, Date]);
+  }
 }
 
 export default function PlaceAvailabilityCalendar({
@@ -91,6 +101,10 @@ export default function PlaceAvailabilityCalendar({
     }
   }
 
+  const ownerOnChange = isOwner
+    ? (value: any, event: any) => handleOwnerSelect(value, event, onOwnerSelect)
+    : undefined;
+
   return (
     <div style={{
       margin: "2.5em 0",
@@ -108,7 +122,7 @@ export default function PlaceAvailabilityCalendar({
       <Calendar
         locale={i18nLanguage === "es" ? "es-ES" : "en-US"}
         selectRange={isOwner}
-        onChange={isOwner ? onOwnerSelect : undefined}
+        onChange={ownerOnChange}
         tileClassName={tileClassName}
         tileContent={({ date, view }: { date: Date; view: CalendarView }) =>
           view === 'month' && isDateBusy(date) ? (

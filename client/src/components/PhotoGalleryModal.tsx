@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function PhotoGalleryModal({ photos, open, onClose }: { photos: any[], open: boolean, onClose: ()=>void }) {
   if (!open) return null;
   return (

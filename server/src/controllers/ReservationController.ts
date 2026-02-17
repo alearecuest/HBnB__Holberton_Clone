@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { reservationRepository } from "../repositories/ReservationRepository";
 import { placeRepository } from "../repositories/PlaceRepository";
 import { AppDataSource } from "../ormconfig";
@@ -6,7 +6,7 @@ import { User } from "../entities/User";
 import { Place } from "../entities/Place";
 import { AuthenticatedRequest } from "../middlewares/auth";
 
-export const getReservationsForPlace = async (req: Response, res: Response) => {
+export const getReservationsForPlace = async (req: Request, res: Response) => {
   const { placeId } = req.params;
   const reservations = await reservationRepository.find({
     where: { place: { id: placeId } },

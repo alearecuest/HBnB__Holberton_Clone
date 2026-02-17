@@ -1,6 +1,4 @@
-import { useAuth } from "../context/AuthContext";
-
-export async function createPlace(place: { title: string, description: string, price: number, latitude: number, longitude: number }, token: string) {
+export async function createPlace(place: { title: string, description: string, price: number, latitude: number, longitude: number, amenities?: string[] }, token: string) {
   const res = await fetch("http://localhost:4000/api/v1/places", {
     method: "POST",
     headers: {

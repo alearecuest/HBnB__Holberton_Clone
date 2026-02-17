@@ -1,29 +1,17 @@
-# Node
-node_modules
-dist
-.env
+# Node modules
+node_modules/
+**/node_modules/
 
-# Vite
-/client/dist
-/client/.env
+# Build output
+/server/dist/
+/client/dist/
 
-# TypeORM
-/server/*.sqlite
-/server/dist
-/server/.env
+# Env files
+*.env
 
-# VSCode
-.vscode/
-
-# OS
+# Logs, local configs, system files
+npm-debug.log
+yarn-debug.log
 .DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Hardcode User
-server/src/scripts/seedUser.ts
-
-# HBnB Database
-/hbnb.sqlite
+.env.*
+.env
