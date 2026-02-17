@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 
+type CalendarView = 'century' | 'decade' | 'year' | 'month';
+
 function rangeToApi(range: [Date, Date]) {
   const sort = range[0] < range[1] ? range : [range[1], range[0]];
   return {
@@ -10,17 +12,19 @@ function rangeToApi(range: [Date, Date]) {
   };
 }
 
+interface PlaceAvailabilityCalendarProps {
+  placeId: string;
+  isOwner?: boolean;
+  i18nLanguage?: string;
+  token?: string;
+}
+
 export default function PlaceAvailabilityCalendar({
   placeId,
   isOwner = false,
   i18nLanguage = "en",
   token
-}: {
-  placeId: string;
-  isOwner?: boolean;
-  i18nLanguage?: string;
-  token?: string;
-}) {
+}: PlaceAvailabilityCalendarProps) {
   const [busyDates, setBusyDates] = useState<string[]>([]);
   const [selectedRange, setSelectedRange] = useState<[Date, Date] | null>(null);
   const [msg, setMsg] = useState<string>("");
@@ -42,7 +46,7 @@ export default function PlaceAvailabilityCalendar({
     return busyDates.includes(date.toISOString().slice(0,10));
   }
 
-  function tileClassName({ date, view }: any) {
+  function tileClassName({ date, view }: { date: Date; view: CalendarView }) {
     if (view === 'month' && isDateBusy(date)) {
       return 'busy-day';
     }
@@ -106,7 +110,7 @@ export default function PlaceAvailabilityCalendar({
         selectRange={isOwner}
         onChange={isOwner ? onOwnerSelect : undefined}
         tileClassName={tileClassName}
-        tileContent={({ date, view }) =>
+        tileContent={({ date, view }: { date: Date; view: CalendarView }) =>
           view === 'month' && isDateBusy(date) ? (
           <span className="busy-emoji" role="img" aria-label="blocked">🚫</span>
         ) : null

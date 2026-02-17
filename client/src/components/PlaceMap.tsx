@@ -27,7 +27,7 @@ export function PlacesMap({
   onMarkerClick?: (place: any) => void;
   height?: string;
 }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   if (!places || places.length === 0)
     return <div style={{ color: "#777", padding: "2em", textAlign: "center" }}>
       {t("places.noplacesonmap", "No places on map.")}
@@ -106,8 +106,8 @@ export default function PlaceMap({
   }
   return (
     <div style={{
-      width: "100%",
-      height: "100%",
+      width: width,
+      height: height,
       minHeight: 340,
       borderRadius: 18,
       overflow: "hidden",

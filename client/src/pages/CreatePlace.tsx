@@ -25,10 +25,22 @@ function arrayfyFiles(fileList: FileList | null): File[] {
   return Array.from(fileList);
 }
 
-export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
+interface CreatePlaceProps {
+  onCreated: () => void;
+}
+
+interface PlaceForm {
+  title: string;
+  description: string;
+  price: string;
+  latitude: string;
+  longitude: string;
+}
+
+export default function CreatePlace({ onCreated }: CreatePlaceProps) {
   const { t, i18n } = useTranslation();
   const { token } = useAuth();
-  const [form, setForm] = useState({ title: "", description: "", price: "", latitude: "", longitude: "" });
+  const [form, setForm] = useState<PlaceForm>({ title: "", description: "", price: "", latitude: "", longitude: "" });
   const [photos, setPhotos] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -78,7 +90,6 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    // Valida campos, SIEMPRE resetea submitting en error/return:
     if (!form.title.trim()) {
       setError(t("form.errtitle", "Title is required."));
       setSubmitting(false);
@@ -210,7 +221,7 @@ export default function CreatePlace({ onCreated }: { onCreated: () => void }) {
                 onChange={() => handleAmenityChange(a.id)}
                 style={{ marginRight: 7 }}
               />
-              {amenityNameMap[a.name] ? amenityNameMap[a.name][i18n.language] : a.name}
+              {amenityNameMap[a.name] ? amenityNameMap[a.name][i18n.language as "es" | "en"] : a.name}
             </label>
           ))}
         </div>

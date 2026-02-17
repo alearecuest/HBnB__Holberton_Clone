@@ -20,7 +20,7 @@ const amenityNameMap: Record<string, { es: string, en: string }> = {
   "Barbecue": { es: "Parrillero", en: "Barbecue" }
 };
 
-export default function EditPlace({ id, onBack }: { id: string, onBack?: () => void }) {
+export default function EditPlace({ id, onBack }: { id: string; onBack?: () => void }) {
   const { t, i18n } = useTranslation();
   const [place, setPlace] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack?: () => v
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<string>("0");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [saving, setSaving] = useState(false);
@@ -52,7 +52,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack?: () => v
         setPlace(data);
         setTitle(data.title || "");
         setDescription(data.description || "");
-        setPrice(data.price || 0);
+        setPrice(data.price ? String(data.price) : "0");
         setLatitude(data.latitude?.toString() || "");
         setLongitude(data.longitude?.toString() || "");
         setSelectedAmenities((data.amenities || []).map((a: any) => a.id));
@@ -127,7 +127,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack?: () => v
     const patch = {
       title,
       description,
-      price: parseFloat(`${price}`),
+      price: parseFloat(price),
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
       amenities: selectedAmenities
@@ -153,7 +153,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack?: () => v
   if (loading) return <div>{t("general.loading", "Loading...")}</div>;
   if (!place) return <div>{error || t("general.notfound", "Not found")}</div>;
 
-  const deleteBtnStyle = {
+  const deleteBtnStyle: React.CSSProperties = {
     position: "absolute",
     top: 8,
     right: 8,
@@ -311,7 +311,7 @@ export default function EditPlace({ id, onBack }: { id: string, onBack?: () => v
                   style={{ marginRight: 7 }}
                 />
                 {amenityNameMap[a.name]
-                  ? amenityNameMap[a.name][i18n.language]
+                  ? amenityNameMap[a.name][i18n.language as "es" | "en"]
                   : a.name}
               </label>
             ))}

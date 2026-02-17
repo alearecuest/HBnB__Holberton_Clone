@@ -53,7 +53,7 @@ function GalleryGrid({
 }) {
   const [modalPhoto, setModalPhoto] = useState<string | null>(null);
   const { t } = useTranslation();
-  const deleteBtnStyle = {
+  const deleteBtnStyle: React.CSSProperties = {
     position: "absolute",
     top: 8,
     right: 8,
@@ -376,7 +376,7 @@ export default function PlaceDetail() {
                   }}>
                   {am.icon && iconsMap[am.icon] ? iconsMap[am.icon] : <FaTv style={{ marginRight: 6 }} />}
                   {amenityNameMap[am.name]
-                    ? amenityNameMap[am.name][i18n.language]
+                    ? amenityNameMap[am.name][i18n.language as "es" | "en"]
                     : am.name}
                 </div>
               ))
