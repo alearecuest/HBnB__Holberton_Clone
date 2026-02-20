@@ -8,7 +8,8 @@
     "start": "node dist/server.js",
     "test": "jest --runInBand",
     "seed:amenities": "ts-node src/scripts/seedAmenities.ts",
-    "lsdist": "ls -l dist"
+    "lsdist": "ls -l dist",
+    "pwd": "pwd"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
