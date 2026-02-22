@@ -33,11 +33,11 @@ app.use("/api/v1/amenities", amenityRouter);
 app.use("/api/v1/places/:placeId/reviews", reviewRouter);
 app.use("/api/v1", reservationRouter);
 
-const clientBuildPath = path.join(__dirname, "../client/build");
-app.use(express.static(clientBuildPath));
+const clientDistPath = path.join(__dirname, "../../client/dist");
+app.use(express.static(clientDistPath));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(clientBuildPath, "index.html"));
+  res.sendFile(path.join(clientDistPath, "index.html"));
 });
 
 export default app;
