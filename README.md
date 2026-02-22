@@ -37,19 +37,21 @@ It allows users to browse, search, save favorites, book, and review unique place
 
 ```
 HBnB__Holberton_Clone/
-├── client/      # React frontend (sources only, build output in server/public)
+├── client/      # React frontend (sources + build output in dist/)
 ├── server/      # Node/Express/TypeORM backend (API, static files, compiled code)
-│   ├── public/  # Frontend build (`npm run build` in client, copy dist here)
-│   ├── src/     # TS source code
-│   └── dist/    # TS compiled code for production
+│   ├── public/  # (uploads/media only; frontend build served direct from client/dist)
+│   ├── src/     # TypeScript source code
+│   └── dist/    # TypeScript compiled code for production
 ```
 
 ---
 
-
 ### Prerequisites
+
 - Node.js (v18+ recommended)
 - NPM/Yarn
+
+---
 
 ### 1. Install dependencies
 
@@ -63,31 +65,39 @@ cd ../client
 npm install
 ```
 
+---
+
 ### 2. Build and Run (production)
 
 ```bash
 # From project root
 cd client
-npm run build                    # Compiles React app
+npm run build        # Compiles React/Vite app (output to client/dist)
 cd ../server
-mkdir -p public                  # If not exists
-cp -r ../client/dist/* ./public/ # Copy client build to backend
-npm run build                    # Compile TypeScript backend
-npm start                        # Run backend (serves API + frontend)
+npm run build        # Compile TypeScript backend
+npm start            # Run backend (serves API + frontend from client/dist)
 ```
-By default backend runs on http://localhost:4000
+
+> The frontend is served automatically from `/client/dist`.  
+> No need to copy build files manually – just make sure `client/dist` is kept up to date.
 
 ---
 
 ### 3. Render Deploy
 
-1. Push full repo to GitHub.
+1. Push the entire repo to GitHub.
 2. Create a new Render **Web Service**:
-    - Root Directory: `server`
-    - Build Command: `npm run build`
-    - Start Command: `npm start`
+    - Root Directory: **leave empty (project root)**
+    - Build Command:  
+      ```sh
+      npm install && cd client && npm run build && cd ../server && npm run build
+      ```
+    - Start Command:  
+      ```sh
+      cd server && node dist/server.js
+      ```
 3. Add any environment variables needed (DB, JWT, etc.)
-4. Render will build, serve API and static frontend in one URL!
+4. The service will build both backend and frontend, and serve everything from one URL!
 
 ---
 
@@ -106,7 +116,7 @@ By default backend runs on http://localhost:4000
 ## Tech Stack
 
 - **Frontend:** React, TypeScript, react-router, react-calendar, OpenStreetMap/leaflet
-- **Backend:** Node.js, Express, MongoDB
+- **Backend:** Node.js, Express, TypeORM, SQLite
 - **Auth:** JWT-based, role-differentiated (user/owner)
 - **Styles:** CSS-in-JS, CSS modules, custom overrides for professional UX
 
@@ -122,6 +132,9 @@ Yes! Blocked and reserved dates sync in real time via API.
 
 **Q: How are favorites saved?**  
 Favorites are stored in your browser with localStorage, so they persist across reloads.
+
+**Q: Are frontend and backend served from the same URL?**  
+Yes! All features (API and UI) live at the same address for seamless experience.
 
 ---
 
