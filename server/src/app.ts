@@ -17,7 +17,11 @@ app.use(express.json());
 app.use("/api/v1", reservationRouter);
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://hbnb-holberton-clone-h1pz.onrender.com"
+    ],
     credentials: true
 }));
 
@@ -32,10 +36,9 @@ app.use("/api/v1/places", placeRouter);
 app.use("/api/v1/amenities", amenityRouter);
 app.use("/api/v1/places/:placeId/reviews", reviewRouter);
 
-app.use(express.static(path.join(__dirname, "../public")));
-
+app.use(express.static(path.join(__dirname, "../client/build")));
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+    res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 
 export default app;
